@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">EditVideo</string>
+    <string name="menu_cut_video">Cut Video</string>
+    <string name="menu_extract_images">Extract Images</string>
+    <string name="menu_extract_audio">Extract Audio</string>
+    <string name="menu_reverse_video">Reverse Video</string>
+    <string name="menu_convert_to_gif">Convert to Gif</string>
+    <string name="menu_split_video">Split video</string>
+</resources>

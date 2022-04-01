@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav"
+    app:startDestination="@id/home">
+
+    <fragment
+        android:id="@+id/result"
+        android:name="com.thuypham.ptithcm.editvideo.ui.fragment.result.ResultFragment"
+        android:label="ResultFragment"
+        tools:layout="@layout/fragment_result" />
+
+    <fragment
+        android:id="@+id/home"
+        android:name="com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment"
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_home" />
+
+</navigation>
