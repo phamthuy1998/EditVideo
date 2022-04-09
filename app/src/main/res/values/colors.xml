@@ -21,5 +21,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="progress_color">#FF3700B3</color>
     <color name="color_splash">#FFFFFF</color>
+    <color name="gray">#B6B6B6</color>
 
 </resources>

@@ -17,4 +17,10 @@
         android:label="HomeFragment"
         tools:layout="@layout/fragment_home" />
 
+    <fragment
+        android:id="@+id/media"
+        android:name="com.thuypham.ptithcm.editvideo.ui.fragment.media.MediaFragment"
+        android:label="MediaFragment"
+        tools:layout="@layout/fragment_media" />
+
 </navigation>

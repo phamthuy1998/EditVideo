@@ -67,7 +67,7 @@ class MenuAdapter(
         return MenuItemViewHolder(binding)
             .apply {
                 binding.root.setOnSingleClickListener {
-                    onItemSelected?.invoke(currentList[adapterPosition])
+                    onItemSelected?.invoke(currentList[absoluteAdapterPosition])
                 }
             }
     }

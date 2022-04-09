@@ -11,14 +11,14 @@ import com.thuypham.ptithcm.editvideo.ui.dialog.ProgressDialog
 
 abstract class BaseActivity<T : ViewDataBinding>(private val layoutId: Int) : AppCompatActivity() {
 
-    lateinit var viewbinding: T
+    lateinit var binding: T
     lateinit var dialog: Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("thuyyy", "bonCreate")
-        viewbinding = DataBindingUtil.setContentView(this, layoutId)
-        viewbinding.lifecycleOwner = this
+        binding = DataBindingUtil.setContentView(this, layoutId)
+        binding.lifecycleOwner = this
         setupLogic()
         setupView()
         setupDataObserver()
@@ -31,7 +31,7 @@ abstract class BaseActivity<T : ViewDataBinding>(private val layoutId: Int) : Ap
     open fun setupDataObserver() {}
 
     override fun finish() {
-        viewbinding.root.hideKeyBoard()
+        binding.root.hideKeyBoard()
         super.finish()
     }
 
@@ -45,6 +45,8 @@ abstract class BaseActivity<T : ViewDataBinding>(private val layoutId: Int) : Ap
     fun showLoading() {
         dialog.show()
     }
+
+
 //
 //    /**
 //     * Overrides the pending Activity transition by performing the "Enter" animation.
