@@ -12,6 +12,7 @@ class FileHelper constructor(context: Context) : IFileHelper {
     companion object {
         const val MEDIA_FOLDER_NAME = "MEDIA_FILE"
         const val TEMP_FOLDER = "TEMP_FILE"
+        const val OUTPUT_FOLDER_NAME = "EditVideo"
     }
 
     private val file = File(context.filesDir, MEDIA_FOLDER_NAME)

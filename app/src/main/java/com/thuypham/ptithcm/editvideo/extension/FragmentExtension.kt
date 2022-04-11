@@ -1,6 +1,7 @@
 package com.thuypham.ptithcm.editvideo.extension
 
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
@@ -36,4 +37,16 @@ fun Fragment.navigateToWithAction(action: NavDirections) {
 
 fun Fragment.canGoBack(): Boolean {
     return findNavController().previousBackStackEntry != null
+}
+
+fun Fragment.getScreenWidth(): Int {
+    val displayMetrics = DisplayMetrics()
+    requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
+    return displayMetrics.widthPixels
+}
+
+fun Fragment.getScreenHeight(): Int {
+    val displayMetrics = DisplayMetrics()
+    requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
+    return displayMetrics.heightPixels
 }

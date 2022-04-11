@@ -1,26 +1,28 @@
 package com.thuypham.ptithcm.editvideo.util
 
 import android.content.Context
+import android.os.Environment
 import android.util.Log
 import com.arthenica.ffmpegkit.FFmpegKit
 import com.arthenica.ffmpegkit.ReturnCode
 import com.thuypham.ptithcm.editvideo.model.MediaFile
+import com.thuypham.ptithcm.editvideo.util.FileHelper.Companion.OUTPUT_FOLDER_NAME
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.*
 
 
 class FFmpegHelper constructor(
     private val context: Context,
-    private val mediaHelper: IMediaHelper
 ) {
-
-    private val folder = File(context.filesDir, FileHelper.MEDIA_FOLDER_NAME)
-    private val tempFolder = File(context.filesDir, FileHelper.TEMP_FOLDER)
-    private val fileDir = context.getDir(FileHelper.MEDIA_FOLDER_NAME, Context.MODE_PRIVATE)
+    private lateinit var outputDir: File
     private val tempDir = context.getDir(FileHelper.TEMP_FOLDER, Context.MODE_PRIVATE)
 
     init {
-        if (!folder.exists()) folder.createNewFile()
-        if (!tempFolder.exists()) tempFolder.createNewFile()
+        val tempDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
+        outputDir = File(tempDir, OUTPUT_FOLDER_NAME)
+        if (!outputDir.exists()) outputDir.mkdir()
+        if (!tempDir.exists()) tempDir.createNewFile()
     }
 
     companion object {
@@ -30,6 +32,117 @@ class FFmpegHelper constructor(
         const val DEFAULT_SECOND: Int = 2
 
         const val TAG = "FFmpegHelper"
+    }
+
+    suspend fun cutVideo(
+        startMs: Int, endMs: Int, filePath: String,
+        onSuccess: ((outputPath: String) -> Unit?)?,
+        onFail: ((String?) -> Unit?)?
+    ) {
+        withContext(Dispatchers.IO) {
+            val outputPath = getOutputVideoPath("cut_video")
+            val complexCommand = arrayOf(
+                "-ss",
+                "" + startMs / 1000,
+                "-y",
+                "-i",
+                filePath,
+                "-t",
+                "" + (endMs - startMs) / 1000,
+                "-vcodec",
+                "mpeg4",
+                "-b:v",
+                "2097152",
+                "-b:a",
+                "48000",
+                "-ac",
+                "2",
+                "-ar",
+                "22050",
+//                "-preset",
+//                "ultrafast",
+                outputPath
+            )
+            val complexCommand1 = arrayOf(
+                "-y",
+                "-i",
+                filePath,
+                "-ss",
+                "" + startMs / 1000,
+                "-t",
+                "" + (endMs - startMs) / 1000,
+                "-c",
+                "copy",
+                "-preset",
+                "ultrafast",
+                outputPath
+            )
+
+            executeCommand(complexCommand1, {
+                onSuccess?.invoke(outputPath)
+            }, onFail)
+        }
+    }
+
+    suspend fun extractAudio(
+        startMs: Int, endMs: Int, filePath: String,
+        onSuccess: ((outputPath: String) -> Unit?)?,
+        onFail: ((String?) -> Unit?)?
+    ) {
+        withContext(Dispatchers.IO) {
+            val outputPath = getOutputVideoPath("cut_video")
+            val complexCommand = arrayOf(
+                "-y",
+                "-i",
+                filePath,
+                "-an",
+                "-r",
+                "1",
+                "-ss",
+                "" + startMs / 1000,
+                "-t",
+                "" + (endMs - startMs) / 1000,
+                outputPath
+            )
+
+            executeCommand(complexCommand, {
+                onSuccess?.invoke(outputPath)
+            }, onFail)
+        }
+    }
+
+    suspend fun extractImages(
+        startMs: Int, endMs: Int, filePath: String,
+        onSuccess: ((outputPath: String) -> Unit?)?,
+        onFail: ((String?) -> Unit?)?
+    ) {
+        withContext(Dispatchers.IO) {
+            var outputFolder = File(outputDir, "extract_images")
+            var fileNo = 0
+            while (outputFolder.exists()) {
+                fileNo++
+                outputFolder = File(outputDir, "extract_images_$fileNo")
+            }
+            outputFolder.mkdir()
+            val imageFile = File(outputFolder, "extract_images_%03d.jpg")
+            val complexCommand = arrayOf(
+                "-y",
+                "-i",
+                filePath,
+                "-an",
+                "-r",
+                "1",
+                "-ss",
+                "" + startMs / 1000,
+                "-t",
+                "" + (endMs - startMs) / 1000,
+                imageFile.absolutePath
+            )
+
+            executeCommand(complexCommand, {
+                onSuccess?.invoke(outputFolder.absolutePath)
+            }, onFail)
+        }
     }
 
     fun getCommandAddAudioToVideo(
@@ -56,9 +169,8 @@ class FFmpegHelper constructor(
         )
     }
 
-
-    private fun getOutputPath(fileName: String): String {
-        val file = File(fileDir, "$fileName.mp4")
+    private fun getOutputVideoPath(fileName: String): String {
+        val file = File(outputDir, "${fileName}_${System.currentTimeMillis()}.mp4")
         return file.absolutePath
     }
 
@@ -67,7 +179,7 @@ class FFmpegHelper constructor(
     }
 
     private fun getDefaultAudioPath(): String {
-        val audioPath = "${fileDir.absolutePath}/default_audio.mp3"
+        val audioPath = "${outputDir.absolutePath}/default_audio.mp3"
         try {
             val audioFile = File(audioPath)
             if (!audioFile.exists()) {
@@ -222,8 +334,8 @@ class FFmpegHelper constructor(
         onSuccess: ((MediaFile?) -> Unit?)? = null,
         onFail: ((String?) -> Unit?)? = null,
     ) {
-        val outputPath = getOutputPath(projectId)
-        val imagesVideoPath = getOutputPath("images_video_$projectId")
+        val outputPath = getOutputVideoPath(projectId)
+        val imagesVideoPath = getOutputVideoPath("images_video_$projectId")
 
         // Todo: Update this condition if needed
         // If there are a lot of media files --> decrease the seconds
@@ -436,14 +548,25 @@ class FFmpegHelper constructor(
             FFmpegKit.executeWithArgumentsAsync(command,
                 { session ->
                     Log.d(TAG, "FFmpeg process exited with state $session")
-                    if (ReturnCode.isSuccess(session.returnCode)) {
-                        Log.d(TAG, "onSuccess")
-                        onSuccess?.invoke()
-                    } else if (ReturnCode.isCancel(session.returnCode)) {
-                        Log.e(TAG," executeCommand fail:${session.failStackTrace}")
-                        onFail?.invoke(session.failStackTrace)
-                    } else {
-                        Log.e(TAG," executeCommand fail:${session.failStackTrace}")
+                    when {
+                        ReturnCode.isSuccess(session.returnCode) -> {
+                            Log.d(TAG, "onSuccess")
+                            onSuccess?.invoke()
+                        }
+                        ReturnCode.isCancel(session.returnCode) -> {
+                            Log.e(TAG, " executeCommand is cancel:${session.failStackTrace}")
+                            onFail?.invoke(session.failStackTrace)
+                        }
+                        session.returnCode != ReturnCode(ReturnCode.CANCEL) ||
+                                session.returnCode != ReturnCode(ReturnCode.SUCCESS) -> {
+                            Log.e(TAG, " executeCommand fail: ${session.failStackTrace}")
+                            val error =
+                                if (session.failStackTrace != null) session.failStackTrace else "Some error occur!"
+                            onFail?.invoke(error)
+                        }
+                        else -> {
+                            Log.e(TAG, " executeCommand fail:${session.failStackTrace}")
+                        }
                     }
                 }, {
                     Log.d(TAG, " onProgress $it")
@@ -451,7 +574,7 @@ class FFmpegHelper constructor(
                     Log.d(TAG, "onStatistics $it")
                 })
         } catch (ex: Error) {
-            Log.e(TAG," executeCommand error:${ex.printStackTrace()}")
+            Log.e(TAG, " executeCommand error:${ex.printStackTrace()}")
             onFail?.invoke(ex.message ?: "")
         } catch (ex: Exception) {
             Log.e(TAG, "execute error: ${ex.printStackTrace()}")

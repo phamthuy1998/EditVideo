@@ -64,12 +64,11 @@ class MenuAdapter(
         viewType: Int,
     ): MenuItemViewHolder {
         val binding = ItemMenuBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return MenuItemViewHolder(binding)
-            .apply {
-                binding.root.setOnSingleClickListener {
-                    onItemSelected?.invoke(currentList[absoluteAdapterPosition])
-                }
+        return MenuItemViewHolder(binding).apply {
+            binding.tvMenu.setOnSingleClickListener {
+                onItemSelected?.invoke(currentList[absoluteAdapterPosition])
             }
+        }
     }
 
     override fun onBindViewHolder(holder: MenuItemViewHolder, position: Int) {

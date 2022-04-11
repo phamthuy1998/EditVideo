@@ -15,12 +15,32 @@
         android:id="@+id/home"
         android:name="com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment"
         android:label="HomeFragment"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/homeToMedia"
+            app:destination="@id/media" />
+        <action
+            android:id="@+id/homeToResult"
+            app:destination="@id/result"
+            app:popUpTo="@id/home" />
+
+        <action
+            android:id="@+id/home_to_extractImages"
+            app:destination="@id/extractImages"
+            app:popUpTo="@id/home" />
+    </fragment>
 
     <fragment
         android:id="@+id/media"
         android:name="com.thuypham.ptithcm.editvideo.ui.fragment.media.MediaFragment"
         android:label="MediaFragment"
         tools:layout="@layout/fragment_media" />
+
+    <fragment
+        android:id="@+id/extractImages"
+        android:name="com.thuypham.ptithcm.editvideo.ui.fragment.extractimage.ExtractImageResultFragment"
+        android:label="ExtractImageFragment"
+        tools:layout="@layout/fragment_extract_image_result">
+    </fragment>
 
 </navigation>

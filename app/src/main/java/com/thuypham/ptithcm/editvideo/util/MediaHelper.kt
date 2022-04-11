@@ -2,12 +2,15 @@ package com.thuypham.ptithcm.editvideo.util
 
 import android.content.ContentResolver
 import android.content.Context
+import android.media.MediaPlayer
+import android.net.Uri
 import android.provider.MediaStore
 import com.thuypham.ptithcm.editvideo.extension.milliSecondToDateFormat
 import com.thuypham.ptithcm.editvideo.model.MediaFile
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+
 
 class MediaHelper(private val context: Context) : IMediaHelper {
     private val contentResolver: ContentResolver = context.contentResolver
@@ -69,10 +72,15 @@ class MediaHelper(private val context: Context) : IMediaHelper {
                 val path = cursor.getString(0)
                 val dateTaken = cursor.getLong(1)
                 val size = cursor.getLong(2)
-                val duration = cursor.getLong(3)
+                var duration = cursor.getLong(3)
                 val bucketName = cursor.getString(4)
                 val id = cursor.getLong(5)
                 val name = cursor.getString(6)
+                if (duration == 0L) {
+                    val mp = MediaPlayer.create(context, Uri.parse(path))
+                    duration = mp.duration.toLong()
+                    mp.release()
+                }
                 val videoFile = MediaFile(
                     id = id,
                     displayName = name,
@@ -109,9 +117,14 @@ class MediaHelper(private val context: Context) : IMediaHelper {
                 val path = cursor.getString(0)
                 val dateTaken = cursor.getLong(1)
                 val size = cursor.getLong(2)
-                val duration = cursor.getLong(3)
+                var duration = cursor.getLong(3)
                 val id = cursor.getLong(4)
                 val name = cursor.getString(5)
+                if (duration == 0L) {
+                    val mp = MediaPlayer.create(context, Uri.parse(path))
+                    duration = mp.duration.toLong()
+                    mp.release()
+                }
                 val videoFile = MediaFile(
                     id = id,
                     displayName = name,

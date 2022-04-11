@@ -185,7 +185,7 @@ class MediaFragment : BaseFragment<FragmentMediaBinding>(R.layout.fragment_media
 
     private val mediaChangeObserver = object : ContentObserver(Handler()) {
         override fun onChange(selfChange: Boolean) {
-            mediaViewModel.getMedia(mediaType)
+            getMediaData()
         }
     }
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ZoomImageView">
+        <attr name="zoomImage_zoomable" format="boolean" />
+        <attr name="zoomImage_translatable" format="boolean" />
+        <attr name="zoomImage_restrictBounds" format="boolean" />
+        <attr name="zoomImage_animateOnReset" format="boolean" />
+        <attr name="zoomImage_doubleTapToZoom" format="boolean" />
+        <attr name="zoomImage_doubleTapToZoomScaleFactor" format="float" />
+        <attr name="zoomImage_autoCenter" format="boolean" />
+        <attr name="zoomImage_minScale" format="float" />
+        <attr name="zoomImage_maxScale" format="float" />
+    </declare-styleable>
+
+
+</resources>
