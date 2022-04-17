@@ -1,6 +1,8 @@
 package com.thuypham.ptithcm.editvideo.ui.fragment.result
 
 import android.util.Log
+import androidx.core.view.isVisible
+import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
@@ -12,12 +14,13 @@ import com.thuypham.ptithcm.editvideo.databinding.FragmentResultBinding
 import com.thuypham.ptithcm.editvideo.extension.goBack
 import com.thuypham.ptithcm.editvideo.extension.shareImageToOtherApp
 import com.thuypham.ptithcm.editvideo.ui.dialog.ConfirmDialog
+import com.thuypham.ptithcm.editvideo.ui.dialog.EditFileNameDialog
 import com.thuypham.ptithcm.editvideo.ui.fragment.home.HomeFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.ResultViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
+import java.io.File
 
 class ResultFragment : BaseFragment<FragmentResultBinding>(R.layout.fragment_result) {
-
 
 
     private val resultViewModel: ResultViewModel by viewModel()
@@ -27,16 +30,27 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(R.layout.fragment_res
     private var currentWindow = 0
     private var playbackPosition = 0L
 
-    private var resultUrl: String? = null
+    private var resultPath: String? = null
+    private var isGifFile: Boolean = false
 
     override fun setupLogic() {
         super.setupLogic()
-        resultUrl = arguments?.getString(HomeFragment.RESULT_PATH)
+        resultPath = arguments?.getString(HomeFragment.RESULT_PATH)
+        isGifFile = resultPath?.contains("gif") ?: false
     }
 
     override fun setupView() {
         setupToolbar()
-        binding.tvOutputPath.text = resultUrl
+        binding.apply {
+            tvOutputPath.text = resultPath
+            ivImage.isVisible = isGifFile
+            if (isGifFile) {
+                Glide.with(this@ResultFragment).asGif()
+                    .placeholder(R.drawable.ic_image_placeholder)
+                    .load(File(resultPath))
+                    .into(ivImage);
+            }
+        }
     }
 
     private fun setupToolbar() {
@@ -48,11 +62,20 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(R.layout.fragment_res
             goBack()
         }
         setSubRightBtn(R.drawable.ic_share) {
-            resultUrl?.let { it1 -> shareImageToOtherApp(it1) }
+            resultPath?.let { it1 -> shareImageToOtherApp(it1) }
         }
         setSubRight2Btn(R.drawable.ic_edit) {
-
+            showDialogEditFile()
         }
+    }
+
+    private fun showDialogEditFile() {
+        EditFileNameDialog(
+            resultPath ?: return,
+            {
+                resultPath = it
+                binding.tvOutputPath.text = resultPath
+            }).show(parentFragmentManager, EditFileNameDialog.TAG)
     }
 
     private fun showDialogDeleteConfirm() {
@@ -62,10 +85,11 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(R.layout.fragment_res
             cancelMsg = getString(R.string.dialog_cancel),
             isShowCancelMsg = true,
             onConfirmClick = {
-                resultUrl?.let { resultViewModel.deleteFile(it) }
+                val file = File(resultPath)
+                if (file.exists()) file.delete()
+                goBack()
             },
-            onCancelClick = {
-            }).show(
+        ).show(
             parentFragmentManager,
             ConfirmDialog.TAG
         )
@@ -73,14 +97,14 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(R.layout.fragment_res
 
     override fun onResume() {
         super.onResume()
-        if (Util.SDK_INT <= 23 || player == null) {
+        if ((Util.SDK_INT <= 23 || player == null) && !isGifFile) {
             initializePlayer()
         }
     }
 
     override fun onPause() {
         super.onPause()
-        if (Util.SDK_INT <= 23) {
+        if (Util.SDK_INT <= 23 && !isGifFile) {
             releasePlayer()
         }
     }
@@ -95,7 +119,7 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(R.layout.fragment_res
     private fun releasePlayer() {
         player?.run {
             playbackPosition = this.currentPosition
-            currentWindow = this.currentWindowIndex
+            currentWindow = this.currentMediaItemIndex
             playWhenReady = this.playWhenReady
             removeListener(playbackStateListener)
             release()
@@ -112,7 +136,7 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(R.layout.fragment_res
             .build()
             .also { exoPlayer ->
                 binding.videoView.player = exoPlayer
-                resultUrl?.let { exoPlayer.setMediaItem(MediaItem.fromUri(it)) }
+                resultPath?.let { exoPlayer.setMediaItem(MediaItem.fromUri(it)) }
                 exoPlayer.playWhenReady = playWhenReady
                 exoPlayer.seekTo(currentWindow, playbackPosition)
                 exoPlayer.addListener(playbackStateListener)
@@ -133,6 +157,5 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(R.layout.fragment_res
             Log.d(this::class.java.name, "changed state to $stateString")
         }
     }
-
 
 }

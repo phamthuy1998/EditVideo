@@ -35,7 +35,7 @@
             style="@style/Theme.EditVideo.Button"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:text="@string/upload_video"
+            android:text="@string/done"
             app:layout_constraintBottom_toBottomOf="@id/glBtnUpload"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.06"

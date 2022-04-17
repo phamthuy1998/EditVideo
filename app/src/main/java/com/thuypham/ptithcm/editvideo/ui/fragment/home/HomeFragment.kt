@@ -1,8 +1,14 @@
 package com.thuypham.ptithcm.editvideo.ui.fragment.home
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Handler
 import android.util.Log
+import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.PopupMenu
+import androidx.core.app.ActivityCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import com.google.android.exoplayer2.ExoPlayer
@@ -53,6 +59,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private var endTime = 0f
     private var currentMenuId = Menu.MENU_CUT_VID
 
+
     private var shouldNavigateToResultFragment = false
 
     private fun onMenuClick(menu: Menu) {
@@ -75,16 +82,21 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 currentMediaFile?.path?.let { mediaViewModel.extractImages(startTime, endTime, it) }
             }
             Menu.MENU_EXTRACT_AUDIO -> {
+                if (isAudioPermissionGranted()) {
+                    currentMediaFile?.path?.let {
+                        mediaViewModel.extractAudio(startTime, endTime, it)
+                    }
+                }
 
             }
             Menu.MENU_REVERSE_VIDEO -> {
 
             }
             Menu.MENU_CONVERT_TO_GIF -> {
-
+                currentMediaFile?.path?.let { mediaViewModel.convertToGift(startTime, endTime, it) }
             }
-            Menu.MENU_SPLIT_VIDEO -> {
-
+            Menu.MENU_REMOVE_AUDIO_VIDEO -> {
+                currentMediaFile?.path?.let { mediaViewModel.removeAudio(it) }
             }
             else -> {
 
@@ -146,6 +158,31 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
     private fun setupToolbar() {
         setToolbarTitle(getString(R.string.app_name))
+        setRightBtn(R.drawable.ic_menu_more) {
+            showPopupMenu(it)
+        }
+    }
+
+    private fun showPopupMenu(view: View) {
+        PopupMenu(requireContext(), view).apply {
+            menuInflater.inflate(R.menu.home_menu, menu)
+            setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.menuMergeImages -> {
+                        navigateTo(R.id.home_to_mergeImages)
+                    }
+                    R.id.menuMergeAudio -> {
+
+                        navigateTo(R.id.home_to_mergeImages)
+                    }
+                    R.id.menuMergeVideos -> {
+                        navigateTo(R.id.home_to_mergeImages)
+                    }
+                }
+                true
+            })
+            show()
+        }
     }
 
     private fun setupRecyclerView() {
@@ -174,10 +211,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                     showLoading()
                 }
                 is ResponseHandler.Failure -> {
+                    shouldNavigateToResultFragment = false
                     hideLoading()
                     response.extra?.let { showSnackBar(it) }
                 }
                 else -> {
+                    shouldNavigateToResultFragment = false
                     hideLoading()
                 }
             }
@@ -189,10 +228,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             val destinationId = when (currentMenuId) {
                 Menu.MENU_CUT_VID -> R.id.homeToResult
                 Menu.MENU_EXTRACT_IMAGES -> R.id.home_to_extractImages
-                Menu.MENU_EXTRACT_AUDIO -> R.id.homeToResult
+                Menu.MENU_EXTRACT_AUDIO -> R.id.home_to_extractAudio
                 Menu.MENU_REVERSE_VIDEO -> R.id.homeToResult
                 Menu.MENU_CONVERT_TO_GIF -> R.id.homeToResult
-                Menu.MENU_SPLIT_VIDEO -> R.id.homeToResult
+                Menu.MENU_REMOVE_AUDIO_VIDEO -> R.id.homeToResult
                 else -> R.id.homeToResult
             }
             shouldNavigateToResultFragment = false
@@ -243,12 +282,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             try {
                 if (currentMediaFile?.duration ?: 0 > 0) {
                     rangeSlider.isVisible = true
-                    startTime = 0f
                     endTime = currentMediaFile?.duration?.toFloat() ?: 0f
+                    rangeSlider.valueFrom = startTime
                     rangeSlider.valueTo = endTime
-                    rangeSlider.values = arrayListOf(0f, endTime)
+                    rangeSlider.values = arrayListOf(startTime, endTime)
                     tvDurationStart.text = rangeSlider.values[0].toLong().toTimeAsHHmmSSS()
                     tvDurationEnd.text = rangeSlider.values[1].toLong().toTimeAsHHmmSSS()
+                    player?.seekTo(startTime.toLong())
                 } else {
                     rangeSlider.isVisible = false
                 }
@@ -309,4 +349,26 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             Log.d(this::class.java.name, "changed state to $stateString")
         }
     }
+
+    private fun isAudioPermissionGranted(): Boolean {
+        if (ActivityCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.RECORD_AUDIO
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestAudioPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+            return false
+        }
+        return true
+    }
+
+    private val requestAudioPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted && currentMenuId == Menu.MENU_EXTRACT_AUDIO) {
+                currentMediaFile?.path?.let { mediaViewModel.extractAudio(startTime, endTime, it) }
+            } else {
+                showSnackBar(getString(R.string.external_permission_denied))
+            }
+        }
+
 }

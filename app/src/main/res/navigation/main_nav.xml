@@ -28,6 +28,21 @@
             android:id="@+id/home_to_extractImages"
             app:destination="@id/extractImages"
             app:popUpTo="@id/home" />
+
+        <action
+            android:id="@+id/home_to_extractAudio"
+            app:destination="@id/extractAudio"
+            app:popUpTo="@id/home" />
+
+        <action
+            android:id="@+id/home_to_mergeImages"
+            app:destination="@id/mergeImages" />
+        <action
+            android:id="@+id/home_to_mergeAudio"
+            app:destination="@id/mergeAudio" />
+        <action
+            android:id="@+id/home_to_mergeVideo"
+            app:destination="@id/mergeVideo" />
     </fragment>
 
     <fragment
@@ -40,7 +55,50 @@
         android:id="@+id/extractImages"
         android:name="com.thuypham.ptithcm.editvideo.ui.fragment.extractimage.ExtractImageResultFragment"
         android:label="ExtractImageFragment"
-        tools:layout="@layout/fragment_extract_image_result">
+        tools:layout="@layout/fragment_extract_image_result" >
+        <action
+            android:id="@+id/extractImages_to_media"
+            app:destination="@id/media" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/extractAudio"
+        android:name="com.thuypham.ptithcm.editvideo.ui.fragment.audio.AudioFragment"
+        android:label="AudioFragment"
+        tools:layout="@layout/fragment_audio" >
+        <action
+            android:id="@+id/action_extractAudio_to_media"
+            app:destination="@id/media" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/mergeImages"
+        android:name="com.thuypham.ptithcm.editvideo.ui.fragment.images2video.MergeImagesToVideoFragment"
+        android:label="MergeImagesToVideoFragment"
+        tools:layout="@layout/fragment_merge_images" >
+        <action
+            android:id="@+id/mergeImages_to_result"
+            app:destination="@id/result" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/mergeVideo"
+        android:name="com.thuypham.ptithcm.editvideo.ui.fragment.mergevideo.MergeVideoFragment"
+        android:label="MergeVideoFragment"
+        tools:layout="@layout/fragment_merge_video" >
+        <action
+            android:id="@+id/action_mergeVideo_to_media"
+            app:destination="@id/media" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/mergeAudio"
+        android:name="com.thuypham.ptithcm.editvideo.ui.mergeaudio.MergeAudioFragment"
+        android:label="MergeImagesToVideoFragment"
+        tools:layout="@layout/fragment_merge_audio" >
+        <action
+            android:id="@+id/action_mergeAudio_to_media"
+            app:destination="@id/media" />
     </fragment>
 
 </navigation>

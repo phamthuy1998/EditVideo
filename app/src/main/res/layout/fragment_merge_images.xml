@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/layout_toolbar" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/glMarginStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.07" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/glMarginEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.93" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnUploadAudio"
+            style="@style/Theme.EditVideo.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/select_audio"
+            app:layout_constraintHeight_percent="0.05"
+            app:layout_constraintStart_toStartOf="@id/glMarginStart"
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvAudioPath"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="@id/glMarginEnd"
+            app:layout_constraintStart_toEndOf="@id/btnUploadAudio"
+            app:layout_constraintTop_toTopOf="@id/btnUploadAudio"
+            tools:text="This is the path of audio file" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierAudioPath"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="btnUploadAudio, tvAudioPath" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvImageDuration"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="@string/second_per_image"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@id/glMarginStart"
+            app:layout_constraintTop_toBottomOf="@id/barrierAudioPath" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvSecondDes"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/second_per_image_des"
+            android:textColor="@color/gray"
+            app:layout_constraintEnd_toEndOf="@id/glMarginEnd"
+            app:layout_constraintStart_toStartOf="@id/glMarginStart"
+            app:layout_constraintTop_toBottomOf="@id/tvImageDuration" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edtSecond"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            app:layout_constraintBottom_toBottomOf="@id/tvImageDuration"
+            app:layout_constraintStart_toEndOf="@id/tvImageDuration"
+            app:layout_constraintWidth_percent="0.3" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnUploadImage"
+            style="@style/Theme.EditVideo.ButtonStroke"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/select_images"
+            app:layout_constraintHeight_percent="0.05"
+            app:layout_constraintStart_toStartOf="@id/glMarginStart"
+            app:layout_constraintTop_toBottomOf="@id/tvSecondDes"
+            app:layout_constraintWidth_percent="0.5" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnMerge"
+            style="@style/Theme.EditVideo.Button"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/merge"
+            app:layout_constraintEnd_toEndOf="@id/glMarginEnd"
+            app:layout_constraintHeight_percent="0.05"
+            app:layout_constraintTop_toBottomOf="@id/tvSecondDes"
+            app:layout_constraintTop_toTopOf="@id/btnUploadImage"
+            app:layout_constraintWidth_percent="0.3" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvImagesSelected"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnUploadImage"
+            app:layout_constraintWidth_percent="0.86"
+            app:spanCount="2"
+            tools:itemCount="6"
+            tools:listitem="@layout/item_image" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

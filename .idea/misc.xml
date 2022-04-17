@@ -12,22 +12,29 @@
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/bg_stroke.xml" value="0.1425" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/bg_stroke_black.xml" value="0.1425" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/dim_bg_gradient.xml" value="0.168" />
+        <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/fragment_merge_image.xml" value="0.1545" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/ic_back.xml" value="0.1425" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/ic_check.xml" value="0.1425" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/ic_checked.xml" value="0.1425" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/ic_close.xml" value="0.168" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/ic_delete.xml" value="0.1455" />
+        <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/ic_menu_more.xml" value="0.1545" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/ic_pen_1.xml" value="0.1455" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/ic_share.xml" value="0.1455" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/splash_background.xml" value="0.1425" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/activity_main.xml" value="0.22395833333333334" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/activity_splash.xml" value="0.234375" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/dialog_confirm.xml" value="0.23802083333333332" />
+        <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/dialog_edit_file_name.xml" value="0.23802083333333332" />
+        <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/fragment_audio.xml" value="0.23802083333333332" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/fragment_detail_iamge.xml" value="0.23802083333333332" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/fragment_detail_image.xml" value="0.11822916666666666" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/fragment_extract_image.xml" value="0.23802083333333332" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/fragment_home.xml" value="0.25" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/fragment_media.xml" value="0.234375" />
+        <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/fragment_merge_audio.xml" value="0.23802083333333332" />
+        <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/fragment_merge_images.xml" value="0.23802083333333332" />
+        <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/fragment_merge_video.xml" value="0.23802083333333332" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/fragment_result.xml" value="0.234375" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/fragment_splash.xml" value="0.2546875" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/item_image.xml" value="0.23802083333333332" />
@@ -37,6 +44,7 @@
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/layout_empty_video.xml" value="0.234375" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/layout_toolbar.xml" value="0.234375" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/progress_dialog.xml" value="0.234375" />
+        <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/menu/home_menu.xml" value="0.23802083333333332" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1455" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1455" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/xml/file_paths.xml" value="0.1" />

@@ -5,9 +5,10 @@
     <string name="menu_extract_audio">Extract Audio</string>
     <string name="menu_reverse_video">Reverse Video</string>
     <string name="menu_convert_to_gif">Convert to Gif</string>
-    <string name="menu_split_video">Split video</string>
+    <string name="menu_remove_audio">Remove audio</string>
     <string name="empty_video_msg">Empty video, please upload a video to edit</string>
-    <string name="upload_video">Upload Video</string>
+    <string name="upload_video">Done</string>
+    <string name="done">Done</string>
     <string name="empty_media">Empty media</string>
 
     <string name="title_media_video">Select videos</string>
@@ -41,4 +42,24 @@
     <string name="external_permission_denied">Storage permission is denied. This permission is required to use this feature</string>
     <string name="load_image_error_msg">Some errors occur. Can\'t load image!</string>
     <string name="extract_image_title">Extract image result</string>
+    <string name="extract_audio_title">Extract audio result</string>
+    <string name="edit_file_name_title">Edit file name</string>
+    <string name="file_name">File name</string>
+    <string name="save">Save</string>
+    <string name="edit_file_name_empty">Please input file name!</string>
+    <string name="edit_file_name_error">Can\'t update file name, please check again!</string>
+    <string name="edit_file_name_no_change">Nothing change!</string>
+    <string name="menu_merge_image">Merge images to video</string>
+    <string name="menu_merge_video">Merge videos</string>
+    <string name="menu_merge_audios">Merge audios</string>
+    <string name="select_images">Select images</string>
+    <string name="select_audio">Select audio</string>
+    <string name="merge">Merge</string>
+
+    <string name="select_image_empty">Please select image!</string>
+    <string name="empty_second_error">Please input second!</string>
+    <string name="second_per_image">Second per image:</string>
+    <string name="second_per_image_des">(Second per image must be greater than 1 and smaller than 20)</string>
+
+    <string name="merge_image_result">Merge images result</string>
 </resources>

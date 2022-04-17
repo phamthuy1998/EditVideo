@@ -1,9 +1,11 @@
 package com.thuypham.ptithcm.editvideo.base
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.databinding.DataBindingUtil
@@ -121,4 +123,21 @@ abstract class BaseFragment<T : ViewDataBinding>(private val layoutId: Int) : Fr
             }
         })
     }
+
+    protected fun hideKeyboard() {
+        if (activity == null) {
+            return
+        }
+        val view = activity?.currentFocus
+        if (view != null) {
+            (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(view.windowToken,
+                InputMethodManager.HIDE_NOT_ALWAYS)
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        hideKeyboard()
+    }
+
 }

@@ -41,8 +41,8 @@ class MenuAdapter(
                     MainApplication.instance.getString(R.string.menu_convert_to_gif)
                 ),
                 Menu(
-                    Menu.MENU_SPLIT_VIDEO,
-                    MainApplication.instance.getString(R.string.menu_split_video)
+                    Menu.MENU_REMOVE_AUDIO_VIDEO,
+                    MainApplication.instance.getString(R.string.menu_remove_audio)
                 ),
             )
         }

@@ -11,6 +11,6 @@ data class Menu(
         const val MENU_EXTRACT_AUDIO = 3
         const val MENU_REVERSE_VIDEO = 4
         const val MENU_CONVERT_TO_GIF = 5
-        const val MENU_SPLIT_VIDEO = 6
+        const val MENU_REMOVE_AUDIO_VIDEO = 6
     }
 }

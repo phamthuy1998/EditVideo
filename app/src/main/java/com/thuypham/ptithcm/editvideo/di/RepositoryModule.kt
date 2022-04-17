@@ -11,4 +11,6 @@ val repositoryModule = module {
     single<IFileHelper> { FileHelper(androidContext()) }
     single { FileHelper(androidContext()) }
 
+    single { FFmpegHelper(androidContext()) }
+
 }

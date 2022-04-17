@@ -12,13 +12,14 @@ import kotlinx.coroutines.launch
 
 class MediaViewModel(
     private val mediaHelper: IMediaHelper,
+    private val fFmpegHelper: FFmpegHelper,
 ) : ViewModel() {
 
-    private val fFmpegHelper by lazy {  FFmpegHelper(MainApplication.instance)}
-
     val mediaFiles = MutableLiveData<ResponseHandler<ArrayList<MediaFile>>>()
-    val mediaSelected = MutableLiveData<ArrayList<MediaFile>>()
+    val mediaSelected = MutableLiveData<ArrayList<MediaFile>?>()
+
     val currentMedia = MutableLiveData<MediaFile>()
+    val audioMedia = MutableLiveData<MediaFile?>()
 
     val editVideoResponse = MutableLiveData<ResponseHandler<String>?>()
 
@@ -90,8 +91,39 @@ class MediaViewModel(
         })
     }
 
+    fun removeAudio(filePath: String) = viewModelScope.launch {
+        editVideoResponse.value = ResponseHandler.Loading
+        fFmpegHelper.removeAudio(filePath, onSuccess = {
+            editVideoResponse.postValue(ResponseHandler.Success(it))
+            null
+        }, onFail = {
+            editVideoResponse.postValue(ResponseHandler.Failure(extra = it))
+            null
+        })
+    }
+
+    fun convertToGift(startTime: Float, endTime: Float, filePath: String)  = viewModelScope.launch {
+        editVideoResponse.value = ResponseHandler.Loading
+        fFmpegHelper.convertVideoToGif(startTime.toInt(), endTime.toInt(),filePath, onSuccess = {
+            editVideoResponse.postValue(ResponseHandler.Success(it))
+            null
+        }, onFail = {
+            editVideoResponse.postValue(ResponseHandler.Failure(extra = it))
+            null
+        })
+    }
+
     fun clearResponse() {
         editVideoResponse.value = null
+    }
+
+    fun clearDataSelected() {
+        mediaSelected.value = null
+        audioMedia.value = null
+    }
+
+    fun cancelFFmpeg() {
+        fFmpegHelper.cancel()
     }
 
 }

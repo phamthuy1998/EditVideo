@@ -31,7 +31,3 @@ fun Activity.shareImageToOtherApp(imagePath: String) {
     val shareIntent = Intent.createChooser(sendIntent, null)
     startActivity(shareIntent)
 }
-
-fun Fragment.shareImageToOtherApp(imagePath: String) {
-    requireActivity().shareImageToOtherApp(imagePath)
-}

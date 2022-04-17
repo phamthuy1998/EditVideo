@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menuMergeImages"
+        android:title="@string/menu_merge_image"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/menuMergeVideos"
+        android:title="@string/menu_merge_video"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/menuMergeAudio"
+        android:title="@string/menu_merge_audios"
+        app:showAsAction="never"/>
+</menu>

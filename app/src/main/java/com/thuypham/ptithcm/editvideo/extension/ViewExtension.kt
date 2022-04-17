@@ -2,7 +2,9 @@ package com.thuypham.ptithcm.editvideo.extension
 
 import android.content.Context
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
+import com.thuypham.ptithcm.editvideo.R
 
 fun View.hideKeyBoard() {
     (context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
@@ -32,3 +34,10 @@ fun View.hide() {
 fun View.gone() {
     visibility = View.GONE
 }
+
+fun View.shakeAnim(duration: Long = 300) {
+    val anim = AnimationUtils.loadAnimation(this.context, R.anim.shake_anim)
+    anim.duration = duration
+    startAnimation(anim)
+}
+

@@ -15,12 +15,14 @@ import java.io.*
 class FFmpegHelper constructor(
     private val context: Context,
 ) {
-    private lateinit var outputDir: File
+    private var outputDir: File
+    private var outputAudioDir: File
     private val tempDir = context.getDir(FileHelper.TEMP_FOLDER, Context.MODE_PRIVATE)
 
     init {
         val tempDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
         outputDir = File(tempDir, OUTPUT_FOLDER_NAME)
+        outputAudioDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
         if (!outputDir.exists()) outputDir.mkdir()
         if (!tempDir.exists()) tempDir.createNewFile()
     }
@@ -90,23 +92,90 @@ class FFmpegHelper constructor(
         onFail: ((String?) -> Unit?)?
     ) {
         withContext(Dispatchers.IO) {
-            val outputPath = getOutputVideoPath("cut_video")
+            val outputPath = getOutputAudioPath("extract_audio")
             val complexCommand = arrayOf(
                 "-y",
                 "-i",
                 filePath,
-                "-an",
-                "-r",
-                "1",
-                "-ss",
-                "" + startMs / 1000,
-                "-t",
-                "" + (endMs - startMs) / 1000,
+                "-vn",
+                "-ac",
+                "2",
+                "-ar",
+                "44100",
+                "-b:a",
+                "128k",
+                "-f",
+                "mp3",
                 outputPath
             )
 
             executeCommand(complexCommand, {
                 onSuccess?.invoke(outputPath)
+            }, onFail)
+        }
+    }
+
+    suspend fun convertVideoToGif(
+        startMs: Int, endMs: Int, filePath: String,
+        onSuccess: ((outputPath: String) -> Unit?)?,
+        onFail: ((String?) -> Unit?)?
+    ) {
+        withContext(Dispatchers.IO) {
+            val outputPath = getOutputGifPath("video_to_gif")
+            val complexCommand = arrayOf(
+                "-ss",
+                "" + startMs / 1000,
+                "-t",
+                "" + (endMs - startMs) / 1000,
+                "-y",
+                "-i",
+                filePath,
+                "-preset",
+                "ultrafast",
+                "-vf",
+                "scale=500:-1",
+                "-r",
+                "10",
+                outputPath
+            )
+            executeCommand(complexCommand, {
+                onSuccess?.invoke(outputPath)
+            }, onFail)
+        }
+    }
+
+    suspend fun reverseVideo(
+        startMs: Int, endMs: Int, filePath: String,
+        onSuccess: ((outputPath: String) -> Unit?)?,
+        onFail: ((String?) -> Unit?)?
+    ) {
+        withContext(Dispatchers.IO) {
+            cutVideo(startMs, endMs, filePath, { videoCuttedPath ->
+                val outputPath = getOutputGifPath("reverse_video")
+                val complexCommand = arrayOf(
+                    "-ss",
+                    "" + startMs / 1000,
+                    "-t",
+                    "" + (endMs - startMs) / 1000,
+                    "-y",
+                    "-i",
+                    videoCuttedPath,
+                    "-preset",
+                    "ultrafast",
+                    "-vf",
+                    "scale=500:-1",
+                    "-r",
+                    "10",
+                    outputPath
+                )
+                val file = File(videoCuttedPath)
+                executeCommand(complexCommand, {
+                    file.deleteOnExit()
+                    onSuccess?.invoke(outputPath)
+                }, {
+                    file.deleteOnExit()
+                    onFail?.invoke(it)
+                })
             }, onFail)
         }
     }
@@ -145,6 +214,31 @@ class FFmpegHelper constructor(
         }
     }
 
+    suspend fun removeAudio(
+        filePath: String,
+        onSuccess: ((outputPath: String) -> Unit?)?,
+        onFail: ((String?) -> Unit?)?
+    ) {
+        withContext(Dispatchers.IO) {
+            val outputPath = getOutputVideoPath("remove_audio")
+            val complexCommand = arrayOf(
+                "-y",
+                "-i",
+                filePath,
+                "-c",
+                "copy",
+                "-an",
+                "-preset",
+                "ultrafast",
+                outputPath
+            )
+
+            executeCommand(complexCommand, {
+                onSuccess?.invoke(outputPath)
+            }, onFail)
+        }
+    }
+
     fun getCommandAddAudioToVideo(
         videoPath: String,
         audioPath: String,
@@ -171,6 +265,16 @@ class FFmpegHelper constructor(
 
     private fun getOutputVideoPath(fileName: String): String {
         val file = File(outputDir, "${fileName}_${System.currentTimeMillis()}.mp4")
+        return file.absolutePath
+    }
+
+    private fun getOutputAudioPath(fileName: String): String {
+        val file = File(outputAudioDir, "${fileName}_${System.currentTimeMillis()}.mp3")
+        return file.absolutePath
+    }
+
+    private fun getOutputGifPath(fileName: String): String {
+        val file = File(outputDir, "${fileName}_${System.currentTimeMillis()}.gif")
         return file.absolutePath
     }
 
@@ -328,68 +432,6 @@ class FFmpegHelper constructor(
         return imageTextFile.absolutePath
     }
 
-    fun createVideoPreviewProject(
-        projectId: String,
-        mediaFiles: List<MediaFile>,
-        onSuccess: ((MediaFile?) -> Unit?)? = null,
-        onFail: ((String?) -> Unit?)? = null,
-    ) {
-        val outputPath = getOutputVideoPath(projectId)
-        val imagesVideoPath = getOutputVideoPath("images_video_$projectId")
-
-        // Todo: Update this condition if needed
-        // If there are a lot of media files --> decrease the seconds
-        // Note: The seconds of each video shouldn't be less than 1
-        val secondsPerVideo = if (mediaFiles.size >= 10) 1 else DEFAULT_SECOND
-
-        // Merge image to video first
-        // Then merge image vide with other video
-        val images = ArrayList<MediaFile>()
-        val videos = ArrayList<MediaFile>()
-        mediaFiles.forEach { mediaFile ->
-            if (mediaFile.isVideo) {
-                videos.add(mediaFile)
-            } else {
-                images.add(mediaFile)
-            }
-        }
-
-        when {
-            // Only video
-            images.isNullOrEmpty() -> {
-                executeMergeVideo(videos, onSuccess, onFail, secondsPerVideo, outputPath, projectId)
-            }
-            // Only image
-            videos.isNullOrEmpty() -> {
-                executeImagesToVideo(
-                    images,
-                    onSuccess,
-                    onFail,
-                    secondsPerVideo,
-                    outputPath,
-                    projectId,
-                    getDefaultAudioPath()
-                )
-            }
-            // Both image and video
-            else -> {
-                executeImagesToVideo(
-                    images, {
-                        executeMergeVideo(
-                            videos,
-                            onSuccess,
-                            onFail,
-                            secondsPerVideo,
-                            outputPath,
-                            projectId,
-                            imagesVideoPath
-                        )
-                    }, onFail, secondsPerVideo, imagesVideoPath, projectId
-                )
-            }
-        }
-    }
-
     fun executeMergeVideo(
         videos: ArrayList<MediaFile>,
         onSuccess: ((MediaFile?) -> Unit?)? = null,
@@ -427,39 +469,30 @@ class FFmpegHelper constructor(
         })
     }
 
-    fun executeImagesToVideo(
+    suspend fun executeImagesToVideo(
         images: ArrayList<MediaFile>,
-        onSuccess: ((MediaFile?) -> Unit?)? = null,
-        onFail: ((String?) -> Unit?)? = null,
         secondPerImage: Int,
-        outputPath: String,
-        projectId: String,
-        audioPath: String? = null
+        audioPath: String? = null,
+        onSuccess: ((resultPath: String) -> Unit?)? = null,
+        onFail: ((String?) -> Unit?)? = null,
     ) {
-        val textImagesPath = getPathImageTextFile(images, secondPerImage)
-        val cmd = cmdImagesToVideo(textImagesPath, outputPath, audioPath = audioPath)
-        executeCommand(cmd, onSuccess = {
-            // Get info of video created --> cast to MediaFile
-            // Todo: Update: get media video info by path
-            val currentMillis = System.currentTimeMillis()
-            val mediaFile = MediaFile(
-                id = currentMillis,
-                path = outputPath,
-                dateAdded = currentMillis,
-                duration = 0,
-                mediaType = MediaFile.MEDIA_TYPE_VIDEO,
-                displayName = projectId,
-            )
-            // Delete temp image text file
-            val fileImageText = File(textImagesPath)
-            if (fileImageText.exists()) fileImageText.delete()
+        withContext(Dispatchers.IO) {
 
-            onSuccess?.invoke(mediaFile)
-        }, onFail = {
-            val fileImageVideo = File(outputPath)
-            if (fileImageVideo.exists()) fileImageVideo.delete()
-            onFail?.invoke(it)
-        })
+            val outputPath = getOutputVideoPath("merge_image")
+            val textImagesPath = getPathImageTextFile(images, secondPerImage)
+            val cmd = cmdImagesToVideo(textImagesPath, outputPath, audioPath = audioPath)
+            executeCommand(cmd, onSuccess = {
+                // Delete temp image text file
+                val fileImageText = File(textImagesPath)
+                if (fileImageText.exists()) fileImageText.delete()
+
+                onSuccess?.invoke(outputPath)
+            }, onFail = {
+                val fileImageVideo = File(outputPath)
+                if (fileImageVideo.exists()) fileImageVideo.delete()
+                onFail?.invoke(it)
+            })
+        }
     }
 
 

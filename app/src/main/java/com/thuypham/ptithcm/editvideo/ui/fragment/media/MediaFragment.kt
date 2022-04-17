@@ -68,8 +68,11 @@ class MediaFragment : BaseFragment<FragmentMediaBinding>(R.layout.fragment_media
     }
 
     private fun onItemMediaClick(mediaFile: MediaFile) {
-        if (maxSelectedCount == 1) {
+        if (maxSelectedCount == 1 && mediaType == MediaFile.MEDIA_TYPE_VIDEO) {
             mediaViewModel.currentMedia.value = mediaFile
+            goBack()
+        } else if (maxSelectedCount == 1 && mediaType == MediaFile.MEDIA_TYPE_AUDIO) {
+            mediaViewModel.audioMedia.value = mediaFile
             goBack()
         } else {
             mediaViewModel.mediaSelected.value = mediaAdapter.getListMediaSelected()
@@ -85,7 +88,7 @@ class MediaFragment : BaseFragment<FragmentMediaBinding>(R.layout.fragment_media
     private fun setupEvent() {
         binding.apply {
             btnUpload.setOnSingleClickListener {
-
+                goBack()
             }
         }
     }
@@ -169,7 +172,7 @@ class MediaFragment : BaseFragment<FragmentMediaBinding>(R.layout.fragment_media
         }
 
         mediaViewModel.mediaSelected.observe(viewLifecycleOwner) {
-            updateHeaderTitle(it.size)
+            it?.size?.let { it1 -> updateHeaderTitle(it1) }
         }
 
         val mediaUri = when (mediaType) {

@@ -50,3 +50,7 @@ fun Fragment.getScreenHeight(): Int {
     requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
     return displayMetrics.heightPixels
 }
+
+fun Fragment.shareImageToOtherApp(imagePath: String) {
+    requireActivity().shareImageToOtherApp(imagePath)
+}
