@@ -172,11 +172,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                         navigateTo(R.id.home_to_mergeImages)
                     }
                     R.id.menuMergeAudio -> {
-
-                        navigateTo(R.id.home_to_mergeImages)
+                        navigateTo(R.id.home_to_mergeAudio)
+                    }
+                    R.id.menuMergeImageVideo -> {
+                        navigateTo(R.id.home_to_merge_img_vid)
                     }
                     R.id.menuMergeVideos -> {
-                        navigateTo(R.id.home_to_mergeImages)
+                        navigateTo(R.id.home_to_mergeVideo)
+                    }
+                    R.id.menuTrimAudio -> {
+                        navigateTo(R.id.home_to_trim_audio)
                     }
                 }
                 true
@@ -281,6 +286,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             videoView.hideController()
             try {
                 if (currentMediaFile?.duration ?: 0 > 0) {
+                    startTime = 0f
                     rangeSlider.isVisible = true
                     endTime = currentMediaFile?.duration?.toFloat() ?: 0f
                     rangeSlider.valueFrom = startTime
@@ -301,10 +307,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             if (player?.currentPosition ?: 0 >= endTime) {
                 player?.seekTo(startTime.toLong())
             }
-            runnable.let { handler.postDelayed(it, 1000) }
+            runnable.let { handler.postDelayed(it, 500) }
         }
         handler = Handler()
-        handler.postDelayed(runnable, 1000)
+        handler.postDelayed(runnable, 500)
     }
 
     private fun initializePlayer() {

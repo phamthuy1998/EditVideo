@@ -33,13 +33,17 @@
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/fragment_home.xml" value="0.25" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/fragment_media.xml" value="0.234375" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/fragment_merge_audio.xml" value="0.23802083333333332" />
+        <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/fragment_merge_image_video.xml" value="0.23802083333333332" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/fragment_merge_images.xml" value="0.23802083333333332" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/fragment_merge_video.xml" value="0.23802083333333332" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/fragment_result.xml" value="0.234375" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/fragment_splash.xml" value="0.2546875" />
+        <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/fragment_trim_audio.xml" value="0.23802083333333332" />
+        <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/item_audio.xml" value="0.23802083333333332" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/item_image.xml" value="0.23802083333333332" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/item_media.xml" value="0.234375" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/item_menu.xml" value="0.2" />
+        <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/item_video_image.xml" value="0.23802083333333332" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/layout_empty_media.xml" value="0.234375" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/layout_empty_video.xml" value="0.234375" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/layout_toolbar.xml" value="0.234375" />

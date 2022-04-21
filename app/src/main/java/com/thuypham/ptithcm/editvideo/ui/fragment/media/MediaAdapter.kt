@@ -10,11 +10,13 @@ import com.bumptech.glide.Glide
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.databinding.ItemMediaBinding
 import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
+import com.thuypham.ptithcm.editvideo.extension.showSnackBar
 import com.thuypham.ptithcm.editvideo.extension.toTime
 import com.thuypham.ptithcm.editvideo.model.MediaFile
 import java.io.File
 
 class MediaAdapter(
+    private val maxSelectCount: Int,
     private val onItemSelected: ((item: MediaFile) -> Unit)? = null,
 ) : ListAdapter<MediaFile, RecyclerView.ViewHolder>(DiffCallback()) {
 
@@ -60,8 +62,8 @@ class MediaAdapter(
         return MediaItemViewHolder(binding)
             .apply {
                 binding.root.setOnSingleClickListener {
-                    val mediaFile = currentList[absoluteAdapterPosition]
-                    if (canSelected) {
+                    if (listItemSelected.size < maxSelectCount) {
+                        val mediaFile = currentList[absoluteAdapterPosition]
                         val isSelected = !(mediaFile.isSelected ?: false)
                         mediaFile.isSelected = isSelected
                         binding.viewSelected.isVisible = isSelected
@@ -71,8 +73,16 @@ class MediaAdapter(
                         } else {
                             listItemSelected.remove(mediaFile)
                         }
+
+                        onItemSelected?.invoke(mediaFile)
+                    } else {
+                        parent.showSnackBar(
+                            parent.context.getString(
+                                R.string.max_selected_count_error,
+                                maxSelectCount
+                            )
+                        )
                     }
-                    onItemSelected?.invoke(mediaFile)
                 }
             }
     }

@@ -1,9 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/layout_toolbar" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnUploadAudio"
+            style="@style/Theme.EditVideo.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/select_audio"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.05"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvAudio"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="@id/btnMerge"
+            app:layout_constraintTop_toBottomOf="@id/btnUploadAudio"
+            tools:itemCount="4"
+            tools:listitem="@layout/item_audio" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnMerge"
+            style="@style/Theme.EditVideo.Button"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/merge"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/glBtnUpload"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.06"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/glBtnUpload"
+            app:layout_constraintWidth_percent="0.8"
+            tools:visibility="visible" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/glBtnUpload"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.92" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvEmptyAudioSelected"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/empty_audio_error"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.9" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

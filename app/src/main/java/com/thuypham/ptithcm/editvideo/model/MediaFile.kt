@@ -35,7 +35,8 @@ data class MediaFile(
 
     var isSelected: Boolean? = false,
 
-    ) {
+    var isPlaying: Boolean? = false,
+) {
     constructor() : this(0, "", 0, 0, "", "", 0)
 
     companion object {

@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
+import com.google.android.material.snackbar.Snackbar
 import com.thuypham.ptithcm.editvideo.R
 
 fun View.hideKeyBoard() {
@@ -40,4 +41,15 @@ fun View.shakeAnim(duration: Long = 300) {
     anim.duration = duration
     startAnimation(anim)
 }
+
+fun View.showSnackBar(message: String?) {
+    val snackBar = Snackbar.make(this, message ?: return, Snackbar.LENGTH_SHORT)
+    snackBar.show()
+}
+
+fun View.showSnackBar(stringRes: Int) {
+    val snackBar = Snackbar.make(this, this.context.getString(stringRes), Snackbar.LENGTH_SHORT)
+    snackBar.show()
+}
+
 

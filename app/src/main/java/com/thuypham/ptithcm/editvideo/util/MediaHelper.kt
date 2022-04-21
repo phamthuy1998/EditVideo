@@ -5,6 +5,8 @@ import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
 import android.provider.MediaStore
+import androidx.core.database.getLongOrNull
+import androidx.core.database.getStringOrNull
 import com.thuypham.ptithcm.editvideo.extension.milliSecondToDateFormat
 import com.thuypham.ptithcm.editvideo.model.MediaFile
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
@@ -69,13 +71,13 @@ class MediaHelper(private val context: Context) : IMediaHelper {
         )
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                val path = cursor.getString(0)
-                val dateTaken = cursor.getLong(1)
-                val size = cursor.getLong(2)
-                var duration = cursor.getLong(3)
-                val bucketName = cursor.getString(4)
+                val path = cursor.getStringOrNull(0)
+                val dateTaken = cursor.getLongOrNull(1)
+                val size = cursor.getLongOrNull(2)
+                var duration = cursor.getLongOrNull(3)
+                val bucketName = cursor.getStringOrNull(4)
                 val id = cursor.getLong(5)
-                val name = cursor.getString(6)
+                val name = cursor.getStringOrNull(6)
                 if (duration == 0L) {
                     val mp = MediaPlayer.create(context, Uri.parse(path))
                     duration = mp.duration.toLong()
@@ -90,7 +92,7 @@ class MediaHelper(private val context: Context) : IMediaHelper {
                     mediaType = MediaFile.MEDIA_TYPE_VIDEO,
                     size = size,
                     bucketName = bucketName,
-                    dateString = dateTaken.milliSecondToDateFormat()
+                    dateString = dateTaken?.milliSecondToDateFormat()
                 )
                 allMediaVideos.add(videoFile)
             }
@@ -114,12 +116,12 @@ class MediaHelper(private val context: Context) : IMediaHelper {
         )
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                val path = cursor.getString(0)
-                val dateTaken = cursor.getLong(1)
-                val size = cursor.getLong(2)
-                var duration = cursor.getLong(3)
+                val path = cursor.getStringOrNull(0)
+                val dateTaken = cursor.getLongOrNull(1)
+                val size = cursor.getLongOrNull(2)
+                var duration = cursor.getLongOrNull(3)
                 val id = cursor.getLong(4)
-                val name = cursor.getString(5)
+                val name = cursor.getStringOrNull(5)
                 if (duration == 0L) {
                     val mp = MediaPlayer.create(context, Uri.parse(path))
                     duration = mp.duration.toLong()
@@ -133,7 +135,7 @@ class MediaHelper(private val context: Context) : IMediaHelper {
                     duration = duration,
                     mediaType = MediaFile.MEDIA_TYPE_AUDIO,
                     size = size,
-                    dateString = dateTaken.milliSecondToDateFormat()
+                    dateString = dateTaken?.milliSecondToDateFormat()
                 )
                 allAudioFiles.add(videoFile)
             }
@@ -157,12 +159,12 @@ class MediaHelper(private val context: Context) : IMediaHelper {
         )
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                val path = cursor.getString(0)
-                val dateTaken = cursor.getLong(1)
-                val size = cursor.getLong(2)
-                val bucketName = cursor.getString(3)
+                val path = cursor.getStringOrNull(0)
+                val dateTaken = cursor.getLongOrNull(1)
+                val size = cursor.getLongOrNull(2)
+                val bucketName = cursor.getStringOrNull(3)
                 val id = cursor.getLong(4)
-                val name = cursor.getString(5)
+                val name = cursor.getStringOrNull(5)
 
                 val videoFile = MediaFile(
                     id = id,
@@ -172,7 +174,7 @@ class MediaHelper(private val context: Context) : IMediaHelper {
                     mediaType = MediaFile.MEDIA_TYPE_IMAGE,
                     size = size,
                     bucketName = bucketName,
-                    dateString = dateTaken.milliSecondToDateFormat()
+                    dateString = dateTaken?.milliSecondToDateFormat()
                 )
                 allMediaImages.add(videoFile)
             }

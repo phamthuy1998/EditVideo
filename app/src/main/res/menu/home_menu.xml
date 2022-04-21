@@ -10,7 +10,16 @@
         android:title="@string/menu_merge_video"
         app:showAsAction="never"/>
     <item
+        android:visible="false"
+        android:id="@+id/menuMergeImageVideo"
+        android:title="@string/menu_merge_img_video"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/menuMergeAudio"
         android:title="@string/menu_merge_audios"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/menuTrimAudio"
+        android:title="@string/menu_trim_audio"
         app:showAsAction="never"/>
 </menu>

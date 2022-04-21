@@ -25,6 +25,18 @@ fun Long.toTime(): String {
 
     return durationFormat
 }
+fun Long.toSecond(): Int {
+    return TimeUnit.MILLISECONDS.toSeconds(this).toInt()
+}
+
+fun Int.toSecond(): Int {
+    return TimeUnit.MILLISECONDS.toSeconds(this.toLong()).toInt()
+}
+
+fun Float.toSecond(): Int {
+    return TimeUnit.MILLISECONDS.toSeconds(this.toLong()).toInt()
+}
+
 
 fun Long.toTimeAsHHmmSSS(): String {
     val hour = TimeUnit.MILLISECONDS.toHours(this)

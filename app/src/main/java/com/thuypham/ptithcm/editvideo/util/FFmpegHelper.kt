@@ -5,7 +5,9 @@ import android.os.Environment
 import android.util.Log
 import com.arthenica.ffmpegkit.FFmpegKit
 import com.arthenica.ffmpegkit.ReturnCode
+import com.thuypham.ptithcm.editvideo.extension.toSecond
 import com.thuypham.ptithcm.editvideo.model.MediaFile
+import com.thuypham.ptithcm.editvideo.model.ScaleType
 import com.thuypham.ptithcm.editvideo.util.FileHelper.Companion.OUTPUT_FOLDER_NAME
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -82,7 +84,11 @@ class FFmpegHelper constructor(
 
             executeCommand(complexCommand1, {
                 onSuccess?.invoke(outputPath)
-            }, onFail)
+            }, {
+                val fileImageVideo = File(outputPath)
+                if (fileImageVideo.exists()) fileImageVideo.delete()
+                onFail?.invoke(it)
+            })
         }
     }
 
@@ -111,7 +117,11 @@ class FFmpegHelper constructor(
 
             executeCommand(complexCommand, {
                 onSuccess?.invoke(outputPath)
-            }, onFail)
+            }, {
+                val fileImageVideo = File(outputPath)
+                if (fileImageVideo.exists()) fileImageVideo.delete()
+                onFail?.invoke(it)
+            })
         }
     }
 
@@ -140,7 +150,11 @@ class FFmpegHelper constructor(
             )
             executeCommand(complexCommand, {
                 onSuccess?.invoke(outputPath)
-            }, onFail)
+            }, {
+                val fileImageVideo = File(outputPath)
+                if (fileImageVideo.exists()) fileImageVideo.delete()
+                onFail?.invoke(it)
+            })
         }
     }
 
@@ -210,7 +224,11 @@ class FFmpegHelper constructor(
 
             executeCommand(complexCommand, {
                 onSuccess?.invoke(outputFolder.absolutePath)
-            }, onFail)
+            }, {
+                val fileImageVideo = File(outputFolder.absolutePath)
+                if (fileImageVideo.exists()) fileImageVideo.delete()
+                onFail?.invoke(it)
+            })
         }
     }
 
@@ -235,7 +253,11 @@ class FFmpegHelper constructor(
 
             executeCommand(complexCommand, {
                 onSuccess?.invoke(outputPath)
-            }, onFail)
+            }, {
+                val fileImageVideo = File(outputPath)
+                if (fileImageVideo.exists()) fileImageVideo.delete()
+                onFail?.invoke(it)
+            })
         }
     }
 
@@ -282,26 +304,9 @@ class FFmpegHelper constructor(
         File(path).outputStream().use { this.copyTo(it) }
     }
 
-    private fun getDefaultAudioPath(): String {
-        val audioPath = "${outputDir.absolutePath}/default_audio.mp3"
-        try {
-            val audioFile = File(audioPath)
-            if (!audioFile.exists()) {
-//                val audioRes = R.raw.default_audio
-//                val inputStream = context.resources.openRawResource(audioRes)
-//                inputStream.toFile(audioPath)
-            }
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return audioPath
-    }
-
     fun cmdMergeAudioWithVideo(
         videoPath: String,
-        audioPath: String = getDefaultAudioPath(),
+        audioPath: String?,
         outputPath: String
     ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
@@ -310,7 +315,7 @@ class FFmpegHelper constructor(
             add("-i")
             add(videoPath)
             add("-i")
-            add(audioPath)
+            audioPath?.let { add(audioPath) }
             add("-c:v")
             add("copy")
             add("-map")
@@ -356,13 +361,43 @@ class FFmpegHelper constructor(
         return cmd.toArray(arrayOfNulls<String>(cmd.size))
     }
 
+    suspend fun executeMergeVideo(
+        mediaFiles: List<MediaFile>,
+        isRemoveAudio: Boolean? = false,
+        secondPerVideo: Int? = null,
+        audioPath: String? = null,
+        onSuccess: ((outputPath: String) -> Unit?)?,
+        onFail: ((String?) -> Unit?)?,
+        scale: String? = ScaleType.SCALE_426_240.scale
+    ) {
+        withContext(Dispatchers.IO) {
+            val outputPath = getOutputVideoPath("merge_video")
+            executeCommand(
+                mergeVideos(
+                    mediaFiles,
+                    isRemoveAudio,
+                    secondPerVideo,
+                    outputPath,
+                    scale,
+                    audioPath
+                ), onSuccess = { onSuccess?.invoke(outputPath) }, {
+                    val fileImageVideo = File(outputPath)
+                    if (fileImageVideo.exists()) fileImageVideo.delete()
+                    onFail?.invoke(it)
+                }
+            )
+        }
+    }
+
     fun mergeVideos(
         mediaFiles: List<MediaFile>,
-        videoWidth: Int? = DEFAULT_WIDTH,
-        videoHeight: Int? = DEFAULT_HEIGHT,
+        isRemoveAudio: Boolean? = false,
+        secondPerVideo: Int? = null,
         outputPath: String,
-        secondPerVideo: Int? = DEFAULT_SECOND,
+        scale: String? = null,
+        audioPath: String?
     ): Array<String> {
+
         val inputs: ArrayList<String> = ArrayList()
         var query: String? = ""
         var queryAudio: String? = ""
@@ -373,17 +408,20 @@ class FFmpegHelper constructor(
                 inputs.add(mediaFile.path ?: "")
 
                 query += "[" + index + ":v]" +
-                        "scale=$videoWidth:$videoHeight:force_original_aspect_ratio=decrease,pad=$videoWidth:$videoHeight:(ow-iw)/2:(oh-ih)/2,"
-//                        "scale=(iw*sar)*max($videoWidth/(iw*sar)\\,$videoHeight/ih):ih*max($videoWidth/(iw*sar)\\,$videoHeight/ih)," +
-//                        "crop=$videoWidth:$videoHeight," +
-                "trim=0:$secondPerVideo," +
-                        "fps=24,setpts=PTS-STARTPTS[v$index];"
+                        "scale=$scale:force_original_aspect_ratio=decrease," +
+                        "pad=$scale:(ow-iw)/2:(oh-ih)/2,setsar=1,fps=24"
+                if (secondPerVideo != null)
+                    query += ",trim=0:$secondPerVideo"
 
+                query += "[v$index];"
                 queryAudio += "[v$index]"
                 index++
             }
         }
-
+        if (audioPath != null) {
+            inputs.add("-i")
+            inputs.add(audioPath)
+        }
         inputs.apply {
             add("-y")
             add("-f")
@@ -393,8 +431,27 @@ class FFmpegHelper constructor(
             add("-i")
             add("anullsrc")
             add("-filter_complex")
-            add("$query $queryAudio concat=n=$index:v=1:a=0")
-            add("-an")
+            add("$query $queryAudio concat=n=$index:v=1:a=0${if (audioPath != null) "[vid]" else ""}")
+            if (audioPath != null) {
+                if (isRemoveAudio == false) {
+                    add("-map")
+                    add("[vid]")
+                    add("-map")
+                    add("[a]")
+                } else {
+                    add("-map")
+                    add("[vid]")
+                    add("-map")
+                    add("${index}:a")
+                    add("-c:a")
+                    add("aac")
+                    add("-strict")
+                    add("-2")
+                    add("-shortest")
+                }
+            } else if (isRemoveAudio == true) {
+                add("-an")
+            }
             add("-preset")
             add("ultrafast")
             add(outputPath)
@@ -432,41 +489,65 @@ class FFmpegHelper constructor(
         return imageTextFile.absolutePath
     }
 
-    fun executeMergeVideo(
+    suspend fun executeMergeVideo1(
         videos: ArrayList<MediaFile>,
-        onSuccess: ((MediaFile?) -> Unit?)? = null,
+        secondsPerVideo: Int? = null,
+        scale: String? = ScaleType.SCALE_426_240.scale,
+        onSuccess: ((outputPath: String) -> Unit?)? = null,
         onFail: ((String?) -> Unit?)? = null,
-        secondsPerVideo: Int,
-        outputPath: String,
-        projectId: String,
-        imagesVideoPath: String? = null
     ) {
-        val cmdMergeVideo = cmdMergeVideosWithNewAudio(
-            videos,
-            outputPath = outputPath,
-            secondPerVideo = secondsPerVideo,
-            imagesVideoPath = imagesVideoPath
-        )
-
-        executeCommand(cmdMergeVideo, onSuccess = {
-
-            // Get info of video created --> cast to MediaFile
-            // Todo: Update: get media video info by path
-            val currentMillis = System.currentTimeMillis()
-            val mediaFile = MediaFile(
-                id = currentMillis,
-                path = outputPath,
-                dateAdded = currentMillis,
-                duration = 0,
-                mediaType = MediaFile.MEDIA_TYPE_VIDEO,
-                displayName = projectId,
+        withContext(Dispatchers.IO) {
+            val outputPath = getOutputVideoPath("merge_video")
+            val cmdMergeVideo = cmdMergeVideosWithNewAudio(
+                videos,
+                scale,
+                outputPath = outputPath,
+                secondPerVideo = secondsPerVideo,
             )
-            onSuccess?.invoke(mediaFile)
-        }, onFail = {
-            val fileImageVideo = File(outputPath)
-            if (fileImageVideo.exists()) fileImageVideo.delete()
-            onFail?.invoke(it)
-        })
+
+            executeCommand(cmdMergeVideo, onSuccess = {
+                onSuccess?.invoke(outputPath)
+            }, onFail = {
+                val fileImageVideo = File(outputPath)
+                if (fileImageVideo.exists()) fileImageVideo.delete()
+                onFail?.invoke(it)
+            })
+        }
+    }
+
+    suspend fun mergeAudioFile(
+        audios: ArrayList<MediaFile>, onSuccess: ((resultPath: String) -> Unit?)? = null,
+        onFail: ((String?) -> Unit?)? = null,
+    ) {
+        withContext(Dispatchers.IO) {
+            val outputPath = getOutputAudioPath("merge_audio")
+            val complexCommand = arrayListOf(
+                "-y",
+            )
+
+            audios.forEach { audio ->
+                complexCommand.add("-i")
+                complexCommand.add(audio.path ?: "")
+            }
+
+            complexCommand.add("-filter_complex")
+//            complexCommand.add("amerge=inputs=${audios.size}:channel_layout=stereo")
+            complexCommand.add("concat=n=${audios.size}:v=0:a=1")
+            complexCommand.add("-c:a")
+            complexCommand.add("mp3")
+            complexCommand.add("-vn")
+            complexCommand.add("-preset")
+            complexCommand.add("ultrafast")
+            complexCommand.add(outputPath)
+
+            executeCommand(complexCommand.toArray(arrayOfNulls<String>(complexCommand.size)), {
+                onSuccess?.invoke(outputPath)
+            }, {
+                val fileImageVideo = File(outputPath)
+                if (fileImageVideo.exists()) fileImageVideo.delete()
+                onFail?.invoke(it)
+            })
+        }
     }
 
     suspend fun executeImagesToVideo(
@@ -498,31 +579,15 @@ class FFmpegHelper constructor(
 
     fun cmdMergeVideosWithNewAudio(
         mediaFiles: List<MediaFile>,
-        videoWidth: Int = DEFAULT_WIDTH,
-        videoHeight: Int = DEFAULT_HEIGHT,
+        scale: String?,
         outputPath: String,
-        secondPerVideo: Int = DEFAULT_SECOND,
-        audioPath: String = getDefaultAudioPath(),
-        imagesVideoPath: String? = null,
+        secondPerVideo: Int?,
+        audioPath: String? = null,
     ): Array<String> {
         val inputs: ArrayList<String> = ArrayList()
         var query: String? = ""
         var queryAudio: String? = ""
         var index = 0
-
-        // Set video create by images at the first video merge
-        imagesVideoPath?.let { imageVidPath ->
-            inputs.add("-i")
-            inputs.add(imageVidPath)
-            query += "[" + index + ":v]" +
-                    "scale=$videoWidth:$videoHeight:force_original_aspect_ratio=decrease," +
-                    "pad=$videoWidth:$videoHeight:-1:-1,setsar=1," +
-                    "fps=24," +
-                    "fade=t=in:st=0:d=1,fade=t=out:st=${secondPerVideo.minus(0.5)}:d=1[v$index];"
-
-            queryAudio += "[v$index]"
-            index++
-        }
 
         mediaFiles.forEach { mediaFile ->
             if (mediaFile.mediaType == MediaFile.MEDIA_TYPE_VIDEO) {
@@ -530,11 +595,14 @@ class FFmpegHelper constructor(
                 inputs.add(mediaFile.path ?: "")
 
                 query += "[" + index + ":v]" +
-                        "scale=$videoWidth:$videoHeight:force_original_aspect_ratio=decrease," +
-                        "pad=$videoWidth:$videoHeight:-1:-1,setsar=1," +
-                        "trim=0:$secondPerVideo," +
-                        "fps=24," +
-                        "fade=t=in:st=0:d=1,fade=t=out:st=${secondPerVideo.minus(0.5)}:d=1[v$index];"
+                        "scale=$scale:force_original_aspect_ratio=decrease," +
+                        "pad=$scale:-1:-1,setsar=1,"
+                if (secondPerVideo != null)
+                    query += "trim=0:$secondPerVideo,"
+
+                val endTime =
+                    secondPerVideo?.minus(0.5) ?: mediaFile.duration?.toSecond()?.minus(0.5)
+                query += "fps=24,fade=t=in:st=0:d=1,fade=t=out:st=$endTime:d=1[v$index];"
 
                 queryAudio += "[v$index]"
                 index++
@@ -542,32 +610,64 @@ class FFmpegHelper constructor(
         }
 
         // Add audio
-        inputs.add("-i")
-        inputs.add(audioPath)
+        if (audioPath != null) {
+            inputs.add("-i")
+            inputs.add(audioPath)
+        }
         inputs.apply {
             add("-y")
             add("-f")
             add("lavfi")
-            add("-t")
-            add("0.1")
             add("-i")
             add("anullsrc")
             add("-filter_complex")
             add("$query $queryAudio concat=n=$index:v=1:a=0[vid]")
-            add("-map")
-            add("[vid]")
-            add("-map")
-            add("${index}:a")
-            add("-c:a")
-            add("aac")
-            add("-strict")
-            add("-2")
-            add("-shortest")
+            if (audioPath != null) {
+                add("-map")
+                add("[vid]")
+                add("-map")
+                add("${index}:a")
+                add("-c:a")
+                add("aac")
+                add("-strict")
+                add("-2")
+            }
+//            add("-shortest")
             add("-preset")
             add("ultrafast")
             add(outputPath)
         }
         return inputs.toArray(arrayOfNulls<String>(inputs.size))
+    }
+
+    suspend fun trimAudio(
+        audioPath: String, startSec: Int, endSec: Int,
+        onSuccess: ((resultPath: String) -> Unit?)? = null,
+        onFail: ((String?) -> Unit?)? = null,
+    ) {
+        withContext(Dispatchers.IO) {
+            val outputPath = getOutputAudioPath("trim_audio")
+            val inputs = arrayListOf<String>()
+            inputs.apply {
+                add("-ss")
+                add("$startSec")
+                add("-i")
+                add(audioPath)
+                add("-t")
+                add("${endSec - startSec}")
+                add("-preset")
+                add("ultrafast")
+                add(outputPath)
+            }
+            executeCommand(inputs.toArray(arrayOfNulls<String>(inputs.size)),
+                {
+                    onSuccess?.invoke(outputPath)
+                }, {
+                    File(outputPath).deleteOnExit()
+                    onFail?.invoke(it)
+                }
+            )
+        }
     }
 
 

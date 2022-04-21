@@ -3,7 +3,6 @@ package com.thuypham.ptithcm.editvideo.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.thuypham.ptithcm.editvideo.MainApplication
 import com.thuypham.ptithcm.editvideo.model.MediaFile
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import com.thuypham.ptithcm.editvideo.util.FFmpegHelper
@@ -48,7 +47,8 @@ class MediaViewModel(
                             }
                         }
                     }
-                    mediaSelected.value = tempList
+                    if (tempList.isNotEmpty())
+                        mediaSelected.value = tempList
                     mediaFiles.value = result
                 }
             }
@@ -102,9 +102,9 @@ class MediaViewModel(
         })
     }
 
-    fun convertToGift(startTime: Float, endTime: Float, filePath: String)  = viewModelScope.launch {
+    fun convertToGift(startTime: Float, endTime: Float, filePath: String) = viewModelScope.launch {
         editVideoResponse.value = ResponseHandler.Loading
-        fFmpegHelper.convertVideoToGif(startTime.toInt(), endTime.toInt(),filePath, onSuccess = {
+        fFmpegHelper.convertVideoToGif(startTime.toInt(), endTime.toInt(), filePath, onSuccess = {
             editVideoResponse.postValue(ResponseHandler.Success(it))
             null
         }, onFail = {

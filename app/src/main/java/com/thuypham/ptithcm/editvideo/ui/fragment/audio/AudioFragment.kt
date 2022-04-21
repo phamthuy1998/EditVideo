@@ -35,6 +35,14 @@ class AudioFragment : BaseFragment<FragmentAudioBinding>(R.layout.fragment_audio
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        if (mMediaPlayer != null) {
+            mMediaPlayer!!.release()
+            mMediaPlayer = null
+        }
+    }
+
     private fun setupToolbar() {
         setToolbarTitle(getString(R.string.extract_audio_title))
         setLeftBtn(R.drawable.ic_close) {
@@ -42,12 +50,4 @@ class AudioFragment : BaseFragment<FragmentAudioBinding>(R.layout.fragment_audio
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        if (mMediaPlayer != null) {
-            mMediaPlayer!!.release()
-            mMediaPlayer = null
-        }
-
-    }
 }

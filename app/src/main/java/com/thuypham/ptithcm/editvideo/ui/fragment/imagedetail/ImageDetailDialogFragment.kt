@@ -22,7 +22,6 @@ class ImageDetailDialogFragment(
     ZoomImageView.ZoomImageListener {
 
     override val isFullScreen = true
-    private var isShowController = true
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
@@ -55,18 +54,14 @@ class ImageDetailDialogFragment(
     }
 
     override fun onImageClick() {
-        isShowController = !isShowController
         toggleControllerVisibility()
     }
 
     private fun toggleControllerVisibility() {
-        binding.flTopControl.isVisible = isShowController
-        if (isShowController) {
-            binding.flTopControl.postDelayed({
-                isShowController = !isShowController
-                toggleControllerVisibility()
-            }, 3000)
-        }
+        binding.flTopControl.isVisible = true
+        binding.flTopControl.postDelayed({
+            binding.flTopControl.isVisible = false
+        }, 3000)
     }
 
     override fun onLongClick() {

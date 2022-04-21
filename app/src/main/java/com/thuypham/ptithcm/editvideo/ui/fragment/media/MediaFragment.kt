@@ -25,7 +25,6 @@ class MediaFragment : BaseFragment<FragmentMediaBinding>(R.layout.fragment_media
     companion object {
         const val MEDIA_TYPE = "MEDIA_TYPE"
         const val MAX_SELECTED_COUNT = "MAX_SELECTED_COUNT"
-        const val MAX_MEDIA_FILE = 30
     }
 
     private val mediaViewModel: MediaViewModel by sharedViewModel()
@@ -34,7 +33,7 @@ class MediaFragment : BaseFragment<FragmentMediaBinding>(R.layout.fragment_media
     private var maxSelectedCount = 1
 
     private val mediaAdapter: MediaAdapter by lazy {
-        MediaAdapter { mediaFile: MediaFile -> onItemMediaClick(mediaFile) }
+        MediaAdapter(maxSelectedCount) { mediaFile: MediaFile -> onItemMediaClick(mediaFile) }
     }
 
     override fun setupLogic() {
@@ -158,7 +157,8 @@ class MediaFragment : BaseFragment<FragmentMediaBinding>(R.layout.fragment_media
                     } else {
                         binding.layoutEmptyMedia.root.gone()
                         mediaAdapter.submitList(data)
-                        mediaAdapter.setListSelected(mediaViewModel.mediaSelected.value)
+                        if (maxSelectedCount > 1)
+                            mediaAdapter.setListSelected(mediaViewModel.mediaSelected.value)
                     }
                 }
                 is ResponseHandler.Failure -> {
@@ -170,9 +170,12 @@ class MediaFragment : BaseFragment<FragmentMediaBinding>(R.layout.fragment_media
                 }
             }
         }
-
-        mediaViewModel.mediaSelected.observe(viewLifecycleOwner) {
-            it?.size?.let { it1 -> updateHeaderTitle(it1) }
+        if (maxSelectedCount > 1) {
+            mediaViewModel.mediaSelected.observe(viewLifecycleOwner) {
+                it?.size?.let { it1 -> updateHeaderTitle(it1) }
+            }
+        } else {
+            updateHeaderTitle(0)
         }
 
         val mediaUri = when (mediaType) {

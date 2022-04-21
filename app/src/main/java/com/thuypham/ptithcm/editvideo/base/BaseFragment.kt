@@ -61,6 +61,14 @@ abstract class BaseFragment<T : ViewDataBinding>(private val layoutId: Int) : Fr
         }
     }
 
+    fun setToolbarTitle(titleRes: Int, onClick: ((View) -> Unit?)? = null) {
+        binding.root.findViewById<AppCompatTextView>(R.id.tvTitle).apply {
+            show()
+            text = getString(titleRes)
+            setOnSingleClickListener { onClick?.invoke(this) }
+        }
+    }
+
     fun setLeftBtn(iconResID: Int, onClick: ((View) -> Unit?)? = null) {
         binding.root.findViewById<AppCompatImageView>(R.id.ivLeft).apply {
             show()
@@ -130,8 +138,10 @@ abstract class BaseFragment<T : ViewDataBinding>(private val layoutId: Int) : Fr
         }
         val view = activity?.currentFocus
         if (view != null) {
-            (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(view.windowToken,
-                InputMethodManager.HIDE_NOT_ALWAYS)
+            (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
+                view.windowToken,
+                InputMethodManager.HIDE_NOT_ALWAYS
+            )
         }
     }
 

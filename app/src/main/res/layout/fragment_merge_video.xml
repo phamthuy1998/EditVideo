@@ -1,9 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/layout_toolbar" />
+
+        <TextView
+            android:id="@+id/tvAudioPath"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_marginEnd="48dp"
+            android:textColor="@color/black"
+            android:visibility="gone"
+            app:layout_constraintEnd_toStartOf="@id/ivRemoveAudio"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            tools:text="Audio path"
+            tools:visibility="visible" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupAudioPath"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="tvAudioPath, ivRemoveAudio"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivRemoveAudio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:padding="12dp"
+            android:src="@drawable/ic_delete"
+            android:tint="@color/black"
+            app:layout_constraintBottom_toBottomOf="@id/tvAudioPath"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvAudioPath" />
+
+        <CheckBox
+            android:id="@+id/checkRemoveAudio"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/remove_audio_of_video"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvAudioPath" />
+
+        <!--        <androidx.appcompat.widget.AppCompatEditText-->
+        <!--            android:id="@+id/edtSecond"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginHorizontal="16dp"-->
+        <!--            android:hint="@string/second_per_video"-->
+        <!--            android:imeOptions="actionDone"-->
+        <!--            android:inputType="number"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@id/checkRemoveAudio"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toEndOf="@id/checkRemoveAudio"/>-->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvVideo"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/checkRemoveAudio"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_video_image" />
+
+        <TextView
+            android:id="@+id/tvEmptyList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/please_upload_videos"
+            android:textColor="@color/black"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp"
+            tools:visibility="gone" />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnMerge"
+            style="@style/Theme.EditVideo.Button"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/merge"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/glBtnUpload"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.06"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/glBtnUpload"
+            app:layout_constraintWidth_percent="0.8"
+            tools:visibility="visible" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/glBtnUpload"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.92" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
