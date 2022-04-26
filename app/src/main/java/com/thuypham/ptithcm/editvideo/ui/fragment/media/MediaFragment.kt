@@ -2,24 +2,32 @@ package com.thuypham.ptithcm.editvideo.ui.fragment.media
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.database.ContentObserver
+import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
 import android.provider.MediaStore
+import android.util.DisplayMetrics
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.base.BaseFragment
 import com.thuypham.ptithcm.editvideo.databinding.FragmentMediaBinding
-import com.thuypham.ptithcm.editvideo.extension.goBack
-import com.thuypham.ptithcm.editvideo.extension.gone
-import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
-import com.thuypham.ptithcm.editvideo.extension.show
+import com.thuypham.ptithcm.editvideo.extension.*
 import com.thuypham.ptithcm.editvideo.model.MediaFile
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
-import com.thuypham.ptithcm.editvideo.util.SpacesItemDecoration
+import com.thuypham.ptithcm.editvideo.util.GridDividerItemDecoration
+import com.thuypham.ptithcm.editvideo.util.ItemDecoration
 import com.thuypham.ptithcm.editvideo.viewmodel.MediaViewModel
 import org.koin.android.viewmodel.ext.android.sharedViewModel
+
 
 class MediaFragment : BaseFragment<FragmentMediaBinding>(R.layout.fragment_media) {
     companion object {
@@ -93,8 +101,73 @@ class MediaFragment : BaseFragment<FragmentMediaBinding>(R.layout.fragment_media
     }
 
     private fun setupRecyclerView() {
+        var padding = 0
+        var spancount = 2
+
+
+        val metrics = DisplayMetrics()
+        requireActivity().windowManager.defaultDisplay.getMetrics(metrics)
+
+        val yInches = metrics.heightPixels / metrics.ydpi
+        val xInches = metrics.widthPixels / metrics.xdpi
+        val diagonalInches = Math.sqrt((xInches * xInches + yInches * yInches).toDouble())
+        if (diagonalInches >= 6.5) {
+            spancount = if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                4
+            } else {
+               3
+            }
+        }
+        padding = if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            resources.getDimension(R.dimen.dimen32).toInt()
+        } else {
+            resources.getDimension(R.dimen.dimen16).toInt()
+        }
+
+        val dercoration = resources.getDimension(R.dimen.dimen6).toInt()
         binding.apply {
-            rvMedia.addItemDecoration(SpacesItemDecoration(4))
+            rvMedia.apply {
+                (layoutParams as ViewGroup.MarginLayoutParams).setMargins(padding, 0, padding, 0)
+//                setPadding(padding, 0, padding, 0)
+                layoutManager = GridLayoutManager(requireContext(), spancount)
+
+            }
+//            rvMedia.addItemDecoration(object : RecyclerView.ItemDecoration() {
+//                override fun getItemOffsets(
+//                    outRect: Rect,
+//                    view: View,
+//                    parent: RecyclerView,
+//                    state: RecyclerView.State
+//                ) {
+//
+//                    outRect.left = dercoration
+//                    outRect.right = dercoration
+//                    outRect.bottom = dercoration
+//                    outRect.top = dercoration
+//                }
+//            })
+
+            val verDivider = DividerItemDecoration(
+                requireContext(),
+                DividerItemDecoration.HORIZONTAL
+            )
+            val horDivider = DividerItemDecoration(
+                requireContext(),
+                DividerItemDecoration.VERTICAL
+            )
+            val verDrawable=  ContextCompat.getDrawable(requireContext(),R.drawable.ver_divider)
+            val horDrawable= ContextCompat.getDrawable(requireContext(),R.drawable.ver_divider)
+//            rvMedia.addItemDecoration(GridDividerItemDecoration(verDrawable!!, horDrawable!!, spancount))
+
+            horDivider.setDrawable(horDrawable!!)
+            verDivider.setDrawable(verDrawable!!)
+//            rvMedia.addItemDecoration(horDivider)
+//            rvMedia.addItemDecoration(verDivider)
+
+
+            rvMedia.addItemDecoration(ItemDecoration(dercoration, spancount))
+
+
             rvMedia.adapter = mediaAdapter
             mediaAdapter.setCanSelected(mediaType == MediaFile.MEDIA_TYPE_IMAGE)
         }

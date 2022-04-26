@@ -102,6 +102,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
             }
         }
+
+        loopList@ for (i in 1..10) {
+            for (j in 3..122) {
+                if (j == i) {
+                    break@loopList
+                }
+            }
+        }
     }
 
     private fun showDialogCutVideoConfirm() {
@@ -275,7 +283,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
     override fun onDestroy() {
         super.onDestroy()
-        handler.removeCallbacks(runnable)
+//        handler.removeCallbacks(runnable)
     }
 
     private fun setMediaItem() {

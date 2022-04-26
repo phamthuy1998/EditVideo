@@ -42,6 +42,10 @@ fun Int.dpToPx(): Int {
     return (this * Resources.getSystem().displayMetrics.density).toInt()
 }
 
+fun Float.dpToPx(): Int {
+    return (this * Resources.getSystem().displayMetrics.density).toInt()
+}
+
 fun View.showKeyboard() {
     post {
         requestFocus()

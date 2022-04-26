@@ -48,7 +48,7 @@ class MediaAdapter(
                 tvDuration.text = item.duration?.toTime()
                 viewSelected.isVisible = item.isSelected ?: false
 
-                tvName.isVisible = item.isAudio
+//                tvName.isVisible = item.isAudio
                 tvName.text = item.displayName
             }
         }

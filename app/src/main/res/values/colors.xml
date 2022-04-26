@@ -23,5 +23,6 @@
     <color name="color_splash">#FFFFFF</color>
     <color name="gray">#B6B6B6</color>
     <color name="gray_D6D6D6">#D6D6D6</color>
+    <color name="transparent">#008A6363</color>
 
 </resources>

@@ -11,8 +11,10 @@
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/bg_radio_button.xml" value="0.1425" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/bg_stroke.xml" value="0.1425" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/bg_stroke_black.xml" value="0.1425" />
+        <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/curved_progress_bar.xml" value="0.1545" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/dim_bg_gradient.xml" value="0.168" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/fragment_merge_image.xml" value="0.1545" />
+        <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/hor_divider.xml" value="0.1545" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/ic_back.xml" value="0.1425" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/ic_check.xml" value="0.1425" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/ic_checked.xml" value="0.1425" />
@@ -21,7 +23,10 @@
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/ic_menu_more.xml" value="0.1545" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/ic_pen_1.xml" value="0.1455" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/ic_share.xml" value="0.1455" />
+        <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/progress_bar_background.xml" value="0.1545" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/splash_background.xml" value="0.1425" />
+        <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/thumb_hor_progress.xml" value="0.1545" />
+        <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/drawable/ver_divider.xml" value="0.1545" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/activity_main.xml" value="0.22395833333333334" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/activity_splash.xml" value="0.234375" />
         <entry key="..\:/ThuyPham/Code/EditVideo/app/src/main/res/layout/dialog_confirm.xml" value="0.23802083333333332" />
