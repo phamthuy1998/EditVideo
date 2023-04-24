@@ -15,6 +15,7 @@ import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
 import com.thuypham.ptithcm.editvideo.extension.showSnackBar
 import com.thuypham.ptithcm.editvideo.extension.toTime
 import com.thuypham.ptithcm.editvideo.model.MediaFile
+import okhttp3.internal.notify
 import java.io.File
 
 class MediaAdapter(
@@ -103,6 +104,17 @@ class MediaAdapter(
         if (!list.isNullOrEmpty()) {
             listItemSelected = list
         }
+    }
+
+    fun selectAll(isSelectAll: Boolean){
+        listItemSelected.clear()
+        if(isSelectAll) {
+            listItemSelected.addAll(currentList)
+        }
+        currentList.forEach {
+            it.isSelected = isSelectAll
+        }
+        notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
