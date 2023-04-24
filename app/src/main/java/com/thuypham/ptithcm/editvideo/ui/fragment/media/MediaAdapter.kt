@@ -114,6 +114,7 @@ class MediaAdapter(
         currentList.forEach {
             it.isSelected = isSelectAll
         }
+        Log.d("bbb", "submit list")
         notifyDataSetChanged()
     }
 
@@ -123,9 +124,11 @@ class MediaAdapter(
 
     class DiffCallback : DiffUtil.ItemCallback<MediaFile>() {
         override fun areItemsTheSame(oldItem: MediaFile, newItem: MediaFile) =
-            oldItem.id == newItem.id //&& oldItem.isSelected == newItem.isSelected
+            oldItem.id == newItem.id /*&& oldItem.isSelected == newItem.isSelected*/
+                .also { Log.d("aaaa", "areItemsTheSame: $it") }
 
         override fun areContentsTheSame(oldItem: MediaFile, newItem: MediaFile) =
-            oldItem == newItem// && oldItem.id == newItem.id//&& oldItem.toString() == newItem.toString()// && oldItem.id == newItem.id && oldItem.isSelected == newItem.isSelected
+            oldItem == newItem /*&& oldItem.id == newItem.id && oldItem.toString() == newItem.toString() && oldItem.id == newItem.id && oldItem.isSelected == newItem.isSelected*/
+                .also { Log.d("aaaa", "areContentsTheSame: $it") }
     }
 }

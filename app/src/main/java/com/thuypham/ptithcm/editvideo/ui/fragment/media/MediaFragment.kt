@@ -90,26 +90,26 @@ class MediaFragment : BaseFragment<FragmentMediaBinding>(R.layout.fragment_media
         binding.apply {
             btnUpload.setOnSingleClickListener {
                 isSelectAll = !isSelectAll
-//                val newList = arrayListOf<MediaFile>()
-//                tempList.onEach {
-//                    it.isSelected = isSelectAll
-//                    val media = MediaFile().apply {
-//                        id = it.id
-//                        path = it.path
-//                        dateAdded = it.dateAdded
-//                        duration = it.duration
-//                        thumbnail = it.thumbnail
-//                        bucketName = it.bucketName
-//                        mediaType = it.mediaType
-//                        isSelected = it.isSelected
-//                    }
-//                    newList.add(media)
-//                }
-//                mediaAdapter.submitList(newList)
+                val newList = arrayListOf<MediaFile>()
+                tempList.onEach {
+                    it.isSelected = isSelectAll
+                    val media = MediaFile().apply {
+                        id = it.id
+                        path = it.path
+                        dateAdded = it.dateAdded
+                        duration = it.duration
+                        thumbnail = it.thumbnail
+                        bucketName = it.bucketName
+                        mediaType = it.mediaType
+                        isSelected = it.isSelected
+                    }
+                    newList.add(media)
+                }
+                mediaAdapter.submitList(newList)
 
 
-                mediaAdapter.selectAll(isSelectAll)
-                mediaViewModel.mediaSelected.value = mediaAdapter.getListMediaSelected()
+//                mediaAdapter.selectAll(isSelectAll)
+//                mediaViewModel.mediaSelected.value = mediaAdapter.getListMediaSelected()
             }
         }
     }
