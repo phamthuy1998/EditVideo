@@ -22,4 +22,9 @@
         android:id="@+id/menuTrimAudio"
         android:title="@string/menu_trim_audio"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menuAddImageFilter"
+        android:title="@string/add_filter_for_image"
+        app:showAsAction="never"/>
 </menu>

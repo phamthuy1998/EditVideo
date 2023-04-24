@@ -1,12 +1,15 @@
 package com.thuypham.ptithcm.editvideo.util
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import com.thuypham.ptithcm.editvideo.MainApplication
 import com.thuypham.ptithcm.editvideo.model.MediaFile
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+
 
 class FileHelper constructor(context: Context) : IFileHelper {
     companion object {
@@ -125,6 +128,12 @@ class FileHelper constructor(context: Context) : IFileHelper {
         }
     }
 
+    override fun getBitmapFromFile(filePath: String): Bitmap {
+        val imageFile = File(filePath)
+        val bmOptions = BitmapFactory.Options()
+        return BitmapFactory.decodeFile(imageFile.absolutePath, bmOptions)
+    }
+
     private fun saveFile(filePath: String, input: InputStream): Boolean {
         try {
             val file = File(filePath)
@@ -164,4 +173,6 @@ interface IFileHelper {
     fun saveFileToApp(fileName: String, input: InputStream): Boolean
 
     fun saveFileToDevice(fileName: String, input: InputStream): Boolean
+
+    fun getBitmapFromFile(filePath: String): Bitmap
 }

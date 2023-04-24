@@ -4,6 +4,7 @@ plugins {
 }
 
 apply plugin: "androidx.navigation.safeargs.kotlin"
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdk 32
@@ -88,4 +89,6 @@ dependencies {
 
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation "org.jetbrains.anko:anko:0.10.8"
+
+    implementation 'com.github.mukeshsolanki:photofilter:1.0.2'
 }

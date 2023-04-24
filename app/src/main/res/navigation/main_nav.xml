@@ -49,6 +49,9 @@
         <action
             android:id="@+id/home_to_merge_img_vid"
             app:destination="@id/mergeImgVid" />
+        <action
+            android:id="@+id/home_to_image_filter"
+            app:destination="@id/imageFilter" />
     </fragment>
 
     <fragment
@@ -133,6 +136,13 @@
         android:name="com.thuypham.ptithcm.editvideo.ui.fragment.mergeimgvid.MergeImageVideoFragment"
         android:label="MergeImageVideoFragment"
         tools:layout="@layout/fragment_merge_image_video">
+
+    </fragment>
+    <fragment
+        android:id="@+id/imageFilter"
+        android:name="com.thuypham.ptithcm.editvideo.ui.fragment.filter.ImageFilterFragment"
+        android:label="ImageFilterFragment"
+        tools:layout="@layout/fragment_image_filter">
 
     </fragment>
 

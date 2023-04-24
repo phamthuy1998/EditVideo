@@ -1,5 +1,7 @@
 package com.thuypham.ptithcm.editvideo.ui.fragment.media
 
+import android.os.Environment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -37,8 +39,10 @@ class MediaAdapter(
                     ivMedia.setImageResource(R.drawable.ic_audio)
                 } else {
                     item.path?.let {
+                        val path = Environment.getExternalStorageDirectory().getPath();
+                        Log.d("aaaa", "bind: $it,  $path")
                         Glide.with(root.context)
-                            .load(File(it))
+                            .load(File("$it"))
                             .placeholder(R.drawable.ic_image_placeholder)
                             .into(ivMedia)
                     }
@@ -62,8 +66,8 @@ class MediaAdapter(
         return MediaItemViewHolder(binding)
             .apply {
                 binding.root.setOnSingleClickListener {
-                    if (listItemSelected.size < maxSelectCount) {
-                        val mediaFile = currentList[absoluteAdapterPosition]
+                    val mediaFile = currentList[absoluteAdapterPosition]
+                    if (mediaFile.isSelected == true || listItemSelected.size < maxSelectCount) {
                         val isSelected = !(mediaFile.isSelected ?: false)
                         mediaFile.isSelected = isSelected
                         binding.viewSelected.isVisible = isSelected
@@ -107,9 +111,9 @@ class MediaAdapter(
 
     class DiffCallback : DiffUtil.ItemCallback<MediaFile>() {
         override fun areItemsTheSame(oldItem: MediaFile, newItem: MediaFile) =
-            oldItem.id == newItem.id
+            oldItem.id == newItem.id //&& oldItem.isSelected == newItem.isSelected
 
         override fun areContentsTheSame(oldItem: MediaFile, newItem: MediaFile) =
-            oldItem == newItem
+            oldItem == newItem// && oldItem.id == newItem.id//&& oldItem.toString() == newItem.toString()// && oldItem.id == newItem.id && oldItem.isSelected == newItem.isSelected
     }
 }

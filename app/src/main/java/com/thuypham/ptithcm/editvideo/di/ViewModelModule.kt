@@ -14,4 +14,5 @@ val viewModelModule = module {
     viewModel { MergeAudioViewModel(get()) }
     viewModel { MergeVideoViewModel(get()) }
     viewModel { TrimAudioViewModel(get()) }
+    viewModel { ImageFilterViewModel(get()) }
 }

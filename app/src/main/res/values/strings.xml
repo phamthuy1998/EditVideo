@@ -71,4 +71,16 @@
     <string name="remove_audio_of_video">Remove audio of video</string>
     <string name="second_per_video">Second per video</string>
     <string name="upload_audio_file">Upload audio file</string>
+    <string name="add_filter_for_image">Add Filter for image</string>
+
+
+    <string name="image_filter_0">No Filter</string>
+    <string name="image_filter_1">Filter 1</string>
+    <string name="image_filter_2">Filter 2</string>
+    <string name="image_filter_3">Filter 3</string>
+    <string name="image_filter_4">Filter 4</string>
+    <string name="image_filter_5">Filter 5</string>
+    <string name="image_filter_6">Filter 6</string>
+    <string name="image_filter_7">Filter 7</string>
+    <string name="image_filter_8">Filter 8</string>
 </resources>

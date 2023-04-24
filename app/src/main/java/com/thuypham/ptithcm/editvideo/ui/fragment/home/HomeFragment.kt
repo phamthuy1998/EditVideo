@@ -168,21 +168,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             menuInflater.inflate(R.menu.home_menu, menu)
             setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
                 when (item.itemId) {
-                    R.id.menuMergeImages -> {
-                        navigateTo(R.id.home_to_mergeImages)
-                    }
-                    R.id.menuMergeAudio -> {
-                        navigateTo(R.id.home_to_mergeAudio)
-                    }
-                    R.id.menuMergeImageVideo -> {
-                        navigateTo(R.id.home_to_merge_img_vid)
-                    }
-                    R.id.menuMergeVideos -> {
-                        navigateTo(R.id.home_to_mergeVideo)
-                    }
-                    R.id.menuTrimAudio -> {
-                        navigateTo(R.id.home_to_trim_audio)
-                    }
+                    R.id.menuMergeImages -> navigateTo(R.id.home_to_mergeImages)
+                    R.id.menuMergeAudio -> navigateTo(R.id.home_to_mergeAudio)
+                    R.id.menuMergeImageVideo -> navigateTo(R.id.home_to_merge_img_vid)
+                    R.id.menuMergeVideos -> navigateTo(R.id.home_to_mergeVideo)
+                    R.id.menuTrimAudio -> navigateTo(R.id.home_to_trim_audio)
+                    R.id.menuAddImageFilter -> navigateTo(R.id.home_to_image_filter)
                 }
                 true
             })

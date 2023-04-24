@@ -17,6 +17,9 @@ import com.thuypham.ptithcm.editvideo.extension.setOnSingleClickListener
 import com.thuypham.ptithcm.editvideo.extension.show
 
 abstract class BaseFragment<T : ViewDataBinding>(private val layoutId: Int) : Fragment() {
+    companion object {
+        val TAG = this::class.java.simpleName
+    }
 
     lateinit var binding: T
 

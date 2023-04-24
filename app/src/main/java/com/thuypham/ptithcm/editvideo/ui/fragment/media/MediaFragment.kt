@@ -6,6 +6,7 @@ import android.database.ContentObserver
 import android.os.Build
 import android.os.Handler
 import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import com.thuypham.ptithcm.editvideo.R
@@ -84,10 +85,28 @@ class MediaFragment : BaseFragment<FragmentMediaBinding>(R.layout.fragment_media
         setupEvent()
     }
 
+    var isSelectAll = false
     private fun setupEvent() {
         binding.apply {
             btnUpload.setOnSingleClickListener {
-                goBack()
+                isSelectAll = !isSelectAll
+                val newList = arrayListOf<MediaFile>()
+                tempList.onEach {
+                    it.isSelected = isSelectAll
+                    val media = MediaFile().apply {
+                        id = it.id
+                        path = it.path
+                        dateAdded = it.dateAdded
+                        duration = it.duration
+                        thumbnail = it.thumbnail
+                        bucketName = it.bucketName
+                        mediaType = it.mediaType
+                        isSelected = it.isSelected
+                    }
+                    newList.add(media)
+                }
+                mediaAdapter.submitList(newList)
+                mediaViewModel.mediaSelected.value = mediaAdapter.getListMediaSelected()
             }
         }
     }
@@ -108,9 +127,10 @@ class MediaFragment : BaseFragment<FragmentMediaBinding>(R.layout.fragment_media
     }
 
     private fun updateHeaderTitle(size: Int) {
+        binding.btnUpload.show()
         val title = when (size) {
             0 -> {
-                binding.btnUpload.gone()
+//                binding.btnUpload.gone()
                 when (mediaType) {
                     MediaFile.MEDIA_TYPE_VIDEO -> getString(R.string.title_media_video)
                     MediaFile.MEDIA_TYPE_IMAGE -> getString(R.string.title_media_image)
@@ -119,7 +139,7 @@ class MediaFragment : BaseFragment<FragmentMediaBinding>(R.layout.fragment_media
                 }
             }
             1 -> {
-                binding.btnUpload.show()
+//                binding.btnUpload.show()
                 when (mediaType) {
                     MediaFile.MEDIA_TYPE_VIDEO -> getString(R.string.video_selected)
                     MediaFile.MEDIA_TYPE_IMAGE -> getString(R.string.image_selected)
@@ -129,7 +149,7 @@ class MediaFragment : BaseFragment<FragmentMediaBinding>(R.layout.fragment_media
 
             }
             else -> {
-                binding.btnUpload.show()
+//                binding.btnUpload.show()
                 when (mediaType) {
                     MediaFile.MEDIA_TYPE_VIDEO -> getString(R.string.videos_selected, size)
                     MediaFile.MEDIA_TYPE_IMAGE -> getString(R.string.images_selected, size)
@@ -141,6 +161,7 @@ class MediaFragment : BaseFragment<FragmentMediaBinding>(R.layout.fragment_media
         setToolbarTitle(title)
     }
 
+    var tempList = arrayListOf<MediaFile>()
     override fun setupDataObserver() {
         super.setupDataObserver()
         mediaViewModel.mediaFiles.observe(viewLifecycleOwner) { result ->
@@ -151,11 +172,13 @@ class MediaFragment : BaseFragment<FragmentMediaBinding>(R.layout.fragment_media
                 is ResponseHandler.Success -> {
                     hideLoading()
                     val data = result.data
+                    tempList = data
 
                     if (data.isNullOrEmpty()) {
                         binding.layoutEmptyMedia.root.show()
                     } else {
                         binding.layoutEmptyMedia.root.gone()
+                        Log.d(TAG, "setupDataObserver: submit list")
                         mediaAdapter.submitList(data)
                         if (maxSelectedCount > 1)
                             mediaAdapter.setListSelected(mediaViewModel.mediaSelected.value)
