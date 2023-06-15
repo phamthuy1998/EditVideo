@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import com.thuypham.ptithcm.editvideo.R
 import com.thuypham.ptithcm.editvideo.databinding.DropdownItemBinding
 
@@ -16,27 +17,30 @@ class DropdownAdapter(
 ) : ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, items) {
     override fun getCount() = items.size
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val binding = DropdownItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        bindView(binding, position)
-        return binding.root
+        val view = convertView ?: DropdownItemBinding.inflate(LayoutInflater.from(parent.context), parent, false).root
+        bindView(view, position)
+        return view
     }
 
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val binding = DropdownItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        bindView(binding, position)
-        return binding.root
+        val view = convertView ?: DropdownItemBinding.inflate(LayoutInflater.from(parent.context), parent, false).root
+        bindView(view, position)
+        return view
     }
 
     @SuppressLint("NewApi")
-    private fun bindView(binding: DropdownItemBinding, position: Int) {
-        binding.tvName.text = getItem(position)
-        binding.tvName.isSelected = true
-        binding.tvName.setTextColor(if (selectedPos == position) context.getColor(R.color.purple_200) else context.getColor(R.color.black))
+    private fun bindView(view: View, position: Int) {
+        view.findViewById<TextView>(R.id.tvName)?.apply {
+            text = getItem(position)
+            isSelected = true
+            setTextColor(if (selectedPos == position) context.getColor(R.color.purple_200) else context.getColor(R.color.black))
+
+        }
     }
 
     override fun getItem(position: Int): String? = items.getOrNull(position)
 
-    fun updatePosition(position: Int){
+    fun updatePosition(position: Int) {
         selectedPos = position
     }
 }
