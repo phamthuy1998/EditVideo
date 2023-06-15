@@ -2,13 +2,21 @@ package com.thuypham.ptithcm.editvideo.ui.fragment.home
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Handler
 import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.PopupWindow
+import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.ListPopupWindow
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import com.google.android.exoplayer2.ExoPlayer
@@ -28,7 +36,6 @@ import com.thuypham.ptithcm.editvideo.model.MediaFile
 import com.thuypham.ptithcm.editvideo.model.Menu
 import com.thuypham.ptithcm.editvideo.model.ResponseHandler
 import com.thuypham.ptithcm.editvideo.ui.dialog.ConfirmDialog
-import com.thuypham.ptithcm.editvideo.ui.fragment.media.MediaFragment
 import com.thuypham.ptithcm.editvideo.viewmodel.MediaViewModel
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
@@ -145,15 +152,55 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     }
 
     private fun setupEvent() {
-        binding.btnUploadVideo.setOnSingleClickListener {
-            navigateTo(
-                R.id.media,
-                bundleOf(
-                    MediaFragment.MEDIA_TYPE to MediaFile.MEDIA_TYPE_VIDEO,
-                    MediaFragment.MAX_SELECTED_COUNT to 1
-                )
-            )
+//        binding.btnUploadVideo.setOnSingleClickListener {
+////            navigateTo(
+////                R.id.media,
+////                bundleOf(
+////                    MediaFragment.MEDIA_TYPE to MediaFile.MEDIA_TYPE_VIDEO,
+////                    MediaFragment.MAX_SELECTED_COUNT to 1
+////                )
+////            )
+//
+//            setPopUpWindow()
+//
+//        }
+        val dropDownHeight = 500
+        placeTypes = resources.getStringArray(R.array.place_types).toCollection(ArrayList())
+
+        placeTypesDropdownView = ListPopupWindow(requireContext())
+//        placeTypesDropdownView.setAdapter(ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, placeTypes))
+        val adapter = DropdownAdapter(requireContext(),placeTypes, selectedPosition)
+        placeTypesDropdownView.setBackgroundDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.rounded_bg))
+        placeTypesDropdownView.setAdapter(adapter)
+        placeTypesDropdownView.anchorView = binding.tvPopup
+        placeTypesDropdownView.setOverlapAnchor(true)
+
+
+        placeTypesDropdownView.height = dropDownHeight
+        placeTypesDropdownView.isModal = true
+        binding.tvPopup.post {
+            placeTypesDropdownView.width = binding.btnUploadVideo.measuredWidth
         }
+        placeTypesDropdownView.setOnItemClickListener { adapterView, view, position, viewId ->
+            binding.tvPopup.text = placeTypes.get(position)
+            selectedPosition = position
+            placeTypesDropdownView.dismiss()
+            adapter.updatePosition(selectedPosition)
+        }
+        binding.tvPopup.setOnClickListener {
+            placeTypesDropdownView.show()
+        }
+    }
+
+
+
+    private var selectedPosition = 0
+    private lateinit var placeTypes: ArrayList<String>
+    private lateinit var placeTypesDropdownView: ListPopupWindow
+    private fun  setPopUpWindow()
+    {
+
+
     }
 
     private fun setupToolbar() {

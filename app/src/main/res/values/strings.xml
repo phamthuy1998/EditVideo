@@ -83,4 +83,20 @@
     <string name="image_filter_6">Filter 6</string>
     <string name="image_filter_7">Filter 7</string>
     <string name="image_filter_8">Filter 8</string>
+
+
+    <string name="pick_place_type">Select Place Type</string>
+
+    <string-array name="place_types">
+        <item>Restaurant jkjasd kakdf kakjsdf jkadhsf akushdf adfhkuasfk af iudfiu</item>
+        <item>Cafe</item>
+        <item>Gas Stations</item>
+        <item>Shopping</item>
+        <item>Hotels</item>
+        <item>Airport</item>
+        <item>Transit Stations</item>
+        <item>Banks</item>
+        <item>School</item>
+        <item>Church</item>
+    </string-array>
 </resources>
